@@ -67,20 +67,23 @@ button:focus-visible {
   }
 } */
 
-/* Ensure full height of html and body */
 html, body {
   height: 100%;
   margin: 0;
+  padding: 0;
 }
 
-/* Root div (the first div in your LandingPage component) */
 #root {
   display: grid;
   grid-template-rows: auto 1fr auto;
   min-height: 100vh;
 }
 
-/* Footer spans full width */
 footer {
   width: 100%;
+}
+
+.container-custom {
+  padding-left: 60px;
+  padding-right: 60px;
 }

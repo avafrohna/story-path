@@ -25,48 +25,58 @@ function ProjectListPage() {
   return (
     <div id="root">
       <Header />
-
-      <div className="mt-3 ms-5">
+  
+      <div className="container-custom mt-3">
         <h1>
           Projects
           <Link to="/preview">
             <button className="btn btn-success ms-4">Preview</button>
           </Link>
         </h1>
-        <p>Here are your projects:</p>
-      </div>
-
-      <div className="mt-3 ms-5">
+      
         {error && <p className="text-danger">Error fetching projects: {error}</p>}
-
+  
         {projects.length > 0 ? (
-          <ul>
-            {projects.map((project) => (
-              <li key={project.id}>
-                <div className="mb-3">
-                  <strong>{project.title}</strong>
-                  <p>{project.description}</p>
-                  <Link to={`/list-locations/${project.id}`}>
-                    <button className="btn btn-success ms-4">View Locations</button>
-                  </Link>
-                </div>
-              </li>
-            ))}
-          </ul>
+          <table className="table table-striped mt-4">
+            <thead>
+              <tr>
+                <th>Project Name</th>
+                <th>Description</th>
+                <th className="text-end">Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {projects.map((project) => (
+                <tr key={project.id}>
+                  <td>{project.title}</td>
+                  <td>{project.description}</td>
+                  <td className="text-end">
+                    <Link to={`/list-locations/${project.id}`}>
+                      <button className="btn btn-primary me-2">View Locations</button>
+                    </Link>
+                    <Link to={`/edit-project/${project.id}`}>
+                      <button className="btn btn-primary me-2">Edit</button>
+                    </Link>
+                    <button className="btn btn-primary me-2">Delete</button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
         ) : (
           <p>No projects available.</p>
         )}
       </div>
-        
-      <div className="mt-3 ms-5">
+  
+      <div className="mt-3 ms-5 mb-5">
         <Link to="/add-project">
           <button className="btn btn-success">Add Project</button>
         </Link>
       </div>
-
+  
       <Footer />
     </div>
-  );
+  );  
 }
 
 export default ProjectListPage;
