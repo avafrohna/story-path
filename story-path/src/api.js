@@ -110,3 +110,47 @@ export async function deleteProject(id) {
     throw new Error(`Error deleting project with ID ${id}`);
   }
 }
+
+// Fetch locations by project ID
+export async function getLocationsByProject(projectId) {
+  try {
+    const response = await apiRequest(`/location?project_id=eq.${projectId}`);
+    return response;
+  } catch (error) {
+    console.error(`Error fetching locations for project ${projectId}:`, error);
+    throw error;
+  }
+}
+
+export async function createLocation(location) {
+  return apiRequest('/location', 'POST', location);
+}
+
+export async function updateLocation(locationId, updates) {
+  try {
+    const response = await apiRequest(`/location?id=eq.${locationId}`, 'PATCH', updates);
+    return response;
+  } catch (error) {
+    console.error(`Error updating location with ID ${locationId}:`, error);
+    throw error;
+  }
+}
+
+export async function deleteLocation(locationId) {
+  try {
+    const response = await fetch(`${API_BASE_URL}/location?id=eq.${locationId}`, {
+      method: 'DELETE',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${JWT_TOKEN}`,
+      },
+    });
+
+    if (!response.ok) {
+      throw new Error(`Error deleting location with ID ${locationId}`);
+    }
+  } catch (error) {
+    console.error(`Error deleting location with ID ${locationId}:`, error);
+    throw error;
+  }
+}

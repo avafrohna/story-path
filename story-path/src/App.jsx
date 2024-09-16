@@ -14,7 +14,7 @@ function App() {
         <Route path="/list-projects" element={<ProjectListPage />} />
         <Route path="/add-project" element={<ProjectForm />} />
         <Route path="/edit-project/:id" element={<ProjectForm />} />
-        <Route path="/list-locations/:projectId" element={<LocationList />} />
+        <Route path="/list-locations/:id" element={<LocationList />} />
         <Route path="/add-location" element={<LocationForm />} />
         <Route path="/preview" element={<PreviewPage />} />
       </Routes>

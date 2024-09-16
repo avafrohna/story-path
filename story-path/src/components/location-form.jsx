@@ -1,11 +1,58 @@
+import { useState } from 'react';
+import { useNavigate, useParams } from 'react-router-dom';
+import ReactQuill from 'react-quill';
+import 'react-quill/dist/quill.snow.css';
+import { createLocation } from '../api'; 
 import Footer from './footer';
 import Header from './header';
 
-//what needs to be done:
-//  - connect form data and API
-//  - fix Location Content to be ReactQuill
-
 function LocationForm() {
+  const navigate = useNavigate();
+  const { projectId } = useParams();
+
+  const [formData, setFormData] = useState({
+    location_name: '',
+    location_trigger: 'Location Entry',
+    location_position: '',
+    score_points: 0,
+    clue: '',
+    location_context: '',
+  });
+
+  const [error, setError] = useState(null);
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData({
+      ...formData,
+      [name]: value,
+    });
+  };
+
+  const handleContentChange = (content) => {
+    setFormData({
+      ...formData,
+      location_context: content,
+    });
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    const locationData = {
+      ...formData,
+      project_id: projectId,
+    };
+
+    try {
+      await createLocation(locationData);
+      navigate(`/list-locations`);
+    } 
+    catch (err) {
+      setError(`Error creating location: ${err.message}`);
+    }
+  };
+
   return (
     <div id="root">
       <Header />
@@ -14,12 +61,16 @@ function LocationForm() {
         <h1>Add Location</h1>
         <p>Fill in the form below to add a new location.</p>
 
-        <form>
+        {error && <p className="text-danger">{error}</p>}
+
+        <form onSubmit={handleSubmit}>
           <div className="mb-3">
             <label className="form-label">Location Name</label>
             <input
               type="text"
               name="location_name"
+              value={formData.location_name}
+              onChange={handleChange}
               className="form-control"
               required
             />
@@ -30,6 +81,8 @@ function LocationForm() {
             <label className="form-label">Location Trigger</label>
             <select
               name="location_trigger"
+              value={formData.location_trigger}
+              onChange={handleChange}
               className="form-select"
               required
             >
@@ -45,6 +98,8 @@ function LocationForm() {
             <input
               type="text"
               name="location_position"
+              value={formData.location_position}
+              onChange={handleChange}
               className="form-control"
               required
             />
@@ -56,6 +111,8 @@ function LocationForm() {
             <input
               type="number"
               name="score_points"
+              value={formData.score_points}
+              onChange={handleChange}
               className="form-control"
               required
             />
@@ -66,6 +123,8 @@ function LocationForm() {
             <label className="form-label">Clue</label>
             <textarea
               name="clue"
+              value={formData.clue}
+              onChange={handleChange}
               className="form-control"
               rows="2"
               required
@@ -75,11 +134,11 @@ function LocationForm() {
 
           <div className="mb-3">
             <label className="form-label">Location Content</label>
-            <textarea
-              name="location_context"
+            <ReactQuill
+              value={formData.location_context}
+              onChange={handleContentChange}
+              theme="snow"
               className="form-control"
-              rows="2"
-              required
             />
             <p className="text-muted small">Provide additional content that will be displayed when participants reach this location.</p>
           </div>

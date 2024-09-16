@@ -32,8 +32,17 @@ function ProjectForm() {
       const fetchProjectData = async () => {
         try {
           const project = await getProject(id);
-          setFormData(project);
-        } catch (err) {
+          setFormData({
+            title: project.title || '',
+            description: project.description || '',
+            is_published: project.is_published || false,
+            participant_scoring: project.participant_scoring || 'Not Scored',
+            instructions: project.instructions || '',
+            initial_clue: project.initial_clue || '',
+            homescreen_display: project.homescreen_display || 'Display initial clue',
+          });
+        }
+        catch (err) {
           setError('Error fetching project: ' + err.message);
         }
       };
@@ -51,19 +60,25 @@ function ProjectForm() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
+    console.log("Submitting form data:", formData);
+  
     try {
       if (isEditMode) {
-        await updateProject(id, formData);
-      } else {
-        await createProject(formData);
+        const response = await updateProject(id, formData);
+        console.log("Update response:", response);
+      } 
+      else {
+        const response = await createProject(formData);
+        console.log("Create response:", response);
       }
+
       navigate('/list-projects');
     } 
     catch (err) {
+      console.error('Error saving project:', err.message);
       setError('Error saving project: ' + err.message);
     }
-  };
+  };  
 
   return (
     <div id="root">
