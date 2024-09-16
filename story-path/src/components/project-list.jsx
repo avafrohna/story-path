@@ -29,27 +29,25 @@ function ProjectListPage() {
       <div className="container-custom mt-3">
         <h1>
           Projects
-          <Link to="/preview">
-            <button className="btn btn-success ms-4">Preview</button>
-          </Link>
         </h1>
+
+        <div className="mt-4">
+          <Link to="/add-project">
+            <button className="btn btn-success">Add Project</button>
+          </Link>
+        </div>
       
         {error && <p className="text-danger">Error fetching projects: {error}</p>}
   
         {projects.length > 0 ? (
           <table className="table table-striped mt-4">
-            <thead>
-              <tr>
-                <th>Project Name</th>
-                <th>Description</th>
-                <th className="text-end">Actions</th>
-              </tr>
-            </thead>
             <tbody>
               {projects.map((project) => (
                 <tr key={project.id}>
-                  <td>{project.title}</td>
-                  <td>{project.description}</td>
+                  <td>
+                    <div className='fw-bold fs-5'>{project.title}</div>
+                    <div>{project.description}</div>
+                  </td>
                   <td className="text-end">
                     <Link to={`/list-locations/${project.id}`}>
                       <button className="btn btn-primary me-2">View Locations</button>
@@ -66,12 +64,6 @@ function ProjectListPage() {
         ) : (
           <p>No projects available.</p>
         )}
-      </div>
-  
-      <div className="mt-3 ms-5 mb-5">
-        <Link to="/add-project">
-          <button className="btn btn-success">Add Project</button>
-        </Link>
       </div>
   
       <Footer />
