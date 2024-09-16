@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom';
 import { useEffect, useState } from 'react';
-import { getProjects } from '../api'; 
+import { getProjects, deleteProject } from '../api'; 
 import Footer from './footer';
 import Header from './header';
 
@@ -21,6 +21,16 @@ function ProjectListPage() {
   
     fetchProjects();
   }, []);
+
+  const handleDelete = async (id) => {
+    try {
+      await deleteProject(id);
+      setProjects(projects.filter((project) => project.id !== id));
+    } 
+    catch (err) {
+      setError(`Error deleting project: ${err.message}`);
+    }
+  };
 
   return (
     <div id="root">
@@ -55,7 +65,12 @@ function ProjectListPage() {
                     <Link to={`/edit-project/${project.id}`}>
                       <button className="btn btn-primary me-2">Edit</button>
                     </Link>
-                    <button className="btn btn-primary me-2">Delete</button>
+                    <button
+                      className="btn btn-primary me-2"
+                      onClick={() => handleDelete(project.id)}
+                    >
+                      Delete
+                    </button>
                   </td>
                 </tr>
               ))}

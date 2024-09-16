@@ -76,7 +76,20 @@ export async function createProject(project) {
  * @returns {Promise<object>} - The updated project object.
  */
 export async function updateProject(id, updates) {
-  return apiRequest(`/project?id=eq.${id}`, 'PATCH', updates);
+  const response = await fetch(`${API_BASE_URL}/project?id=eq.${id}`, {
+    method: 'PATCH',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${JWT_TOKEN}`,
+    },
+    body: JSON.stringify(updates),
+  });
+
+  if (!response.ok) {
+    throw new Error(`Error updating project with ID ${id}`);
+  }
+
+  return response.json();
 }
 
 /**
@@ -85,5 +98,15 @@ export async function updateProject(id, updates) {
  * @returns {Promise<void>}
  */
 export async function deleteProject(id) {
-  return apiRequest(`/project?id=eq.${id}`, 'DELETE');
+  const response = await fetch(`${API_BASE_URL}/project?id=eq.${id}`, {
+    method: 'DELETE',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${JWT_TOKEN}`,
+    },
+  });
+
+  if (!response.ok) {
+    throw new Error(`Error deleting project with ID ${id}`);
+  }
 }

@@ -7,7 +7,7 @@ function LandingPage() {
     <div id="root">
       <Header />
 
-      <body>
+      <div>
         <h1 className="display-4 text-center mt-5">Welcome to Story Path!</h1>
         <p className="text-center mt-3">Create and explore virtual museum exhibits, location-based tours, and treasure hunts</p>
 
@@ -16,7 +16,7 @@ function LandingPage() {
               <button className="btn btn-success">Get Started</button>
             </Link>
         </div>
-      </body>
+      </div>
 
       <Footer />
     </div>

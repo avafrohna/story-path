@@ -6,13 +6,15 @@ function PreviewPage() {
     <div id="root">
       <Header />
 
-      <body>
-        <h1 className="mt-4 ms-5">Preview</h1>
-      </body>
+      <div className="container-custom mt-3">
+        <h1>
+          Preview
+        </h1>
+      </div>
 
       <Footer />
     </div>
   );
 }
-  
+
 export default PreviewPage;
