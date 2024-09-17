@@ -9,18 +9,17 @@ function LocationList() {
   const { projectId } = useParams();
   const [locations, setLocations] = useState([]);
   const [error, setError] = useState(null);
-  const [title, setTitle] = useState([]);
+  const [title, setTitle] = useState('');
   const [showModal, setShowModal] = useState(false);
-  const [qrCodeUrl, setQRCodeUrl] = useState(''); 
+  const [qrCodeUrl, setQRCodeUrl] = useState('');
+  const [modalLocations, setModalLocations] = useState(null);
 
   useEffect(() => {
     const fetchLocations = async () => {
-      console.log(projectId);
       try {
         const projectData = await getProject(projectId);
         setTitle(projectData[0].title);
         const locationsData = await getLocations();
-        console.log(locationsData);
         setLocations(locationsData);
 
         if (locationsData.length === 0) {
@@ -30,13 +29,8 @@ function LocationList() {
             info: 'This is a sample location for demonstration purposes.',
           };
           setLocations([sampleLocation]);
-        } 
-        else {
-          setLocations(locationsData);
         }
-      }
-      catch (err) {
-        console.log(projectId);
+      } catch (err) {
         setError(`Error fetching locations: ${err.message}`);
       }
     };
@@ -56,6 +50,12 @@ function LocationList() {
   const handleQRCode = (locationId) => {
     const locationUrl = `${window.location.origin}/location/${locationId}`;
     setQRCodeUrl(locationUrl);
+    setModalLocations(null);
+    setShowModal(true);
+  };
+
+  const handlePrintAllQRCode = () => {
+    setModalLocations(locations);
     setShowModal(true);
   };
 
@@ -73,7 +73,9 @@ function LocationList() {
           <Link to={`/preview`}>
             <button className="btn btn-success ms-4">Preview</button>
           </Link>
-          <button className="btn btn-success ms-4">Print All QR Codes</button>
+          <button className="btn btn-success ms-4" onClick={handlePrintAllQRCode}>
+            Print All QR Codes
+          </button>
         </h1>
 
         <div className="mt-4">
@@ -90,13 +92,16 @@ function LocationList() {
               {locations.map((location) => (
                 <tr key={location.id}>
                   <td>
-                    <div className='fw-bold fs-5'>{location.name}</div>
+                    <div className="fw-bold fs-5">{location.name}</div>
                     <div>{location.info}</div>
                   </td>
                   <td className="text-end">
                     <button
                       className="btn btn-primary me-2"
-                      onClick={() => handleQRCode(location.id)}>Print QR Code</button>
+                      onClick={() => handleQRCode(location.id)}
+                    >
+                      Print QR Code
+                    </button>
                     <Link to={`/edit-location/${location.id}`}>
                       <button className="btn btn-primary me-2">Edit</button>
                     </Link>
@@ -117,10 +122,12 @@ function LocationList() {
       </div>
 
       <Footer />
+
       <QRGenerator
         show={showModal}
         onClose={handleCloseModal}
         locationUrl={qrCodeUrl}
+        locations={modalLocations}
       />
     </div>
   );
