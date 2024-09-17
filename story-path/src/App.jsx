@@ -16,6 +16,7 @@ function App() {
         <Route path="/edit-project/:id" element={<ProjectForm />} />
         <Route path="/list-locations/:id" element={<LocationList />} />
         <Route path="/add-location" element={<LocationForm />} />
+        {/*<Route path="/edit-location" element={<LocationForm />} />*/}
         <Route path="/preview" element={<PreviewPage />} />
       </Routes>
     </Router>

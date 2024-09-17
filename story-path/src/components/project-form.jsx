@@ -4,10 +4,6 @@ import { createProject, getProject, updateProject } from '../api';
 import Footer from './footer';
 import Header from './header';
 
-//what needs to be done:
-//  - generate random id
-//  - ensure username is implemented properly
-
 function ProjectForm() {
   const navigate = useNavigate();
   const { id } = useParams();
@@ -19,7 +15,6 @@ function ProjectForm() {
     description: '',
     is_published: false,
     participant_scoring: 'Not Scored',
-    //username: '',
     instructions: '',
     initial_clue: '',
     homescreen_display: '',
