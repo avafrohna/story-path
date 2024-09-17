@@ -15,7 +15,7 @@ function App() {
         <Route path="/add-project" element={<ProjectForm />} />
         <Route path="/edit-project/:projectId" element={<ProjectForm />} />
         <Route path="/list-locations/:projectId" element={<LocationList />} />
-        <Route path="/add-location" element={<LocationForm />} />
+        <Route path="/add-location/:projectId" element={<LocationForm />} />
         <Route path="/edit-location/:id" element={<LocationForm />} />
         <Route path="/preview" element={<PreviewPage />} />
       </Routes>

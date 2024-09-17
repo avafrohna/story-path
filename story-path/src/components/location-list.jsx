@@ -52,7 +52,7 @@ function LocationList() {
         </h1>
 
         <div className="mt-4">
-          <Link to={`/add-location`}>
+          <Link to={`/add-location/${projectId}`}>
             <button className="btn btn-success">Add Location</button>
           </Link>
         </div>

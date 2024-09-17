@@ -25,7 +25,19 @@ async function apiRequest(endpoint, method = 'GET', body = null) {
   }
 
   if (body) {
-    const requestBody = { ...body, project_id: parseInt(body.project_id), username: USERNAME };
+    const requestBody = { 
+      ...body, 
+      username: USERNAME
+    };
+
+    if (body.location_content) {
+      requestBody.project_id = parseInt(body.project_id, 10);
+      requestBody.location_content = {
+        ...body.location_content,
+        username: USERNAME,
+      };
+    }
+
     console.log('Request Body:', requestBody);
     options.body = JSON.stringify(requestBody);
     console.log('Request options:', options);

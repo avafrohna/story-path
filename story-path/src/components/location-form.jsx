@@ -12,15 +12,20 @@ function LocationForm() {
   console.log(projectId);
 
   const [formData, setFormData] = useState({
-    location_name: '',
+    location_name: 'hello',
     location_trigger: 'Location Entry',
     location_position: '(27.4975,153.013276)',
     score_points: 0,
-    clue: '',
-    location_content: '',
-    location_order: '',
-    extra: '',
-    project_id: '',
+    clue: 'we',
+    location_content: {
+      location_id: 0,
+      content_order: 1,
+      content_type: 'type',
+      content_body: 'body',
+    },
+    location_order: 'you',
+    extra: 'yay',
+    project_id: projectId,
   });
 
   const [error, setError] = useState(null);
@@ -35,11 +40,15 @@ function LocationForm() {
     });
   };
 
-  const handleContentChange = (content) => {
-    setFormData({
-      ...formData,
-      location_content: content,
-    });
+  const handleContentChange = (value) => {
+    // Update only the content_body field in location_content
+    setFormData((prevData) => ({
+      ...prevData,
+      location_content: {
+        ...prevData.location_content,
+        content_body: value, // ReactQuill returns the HTML content here
+      },
+    }));
   };
 
   const handleSubmit = async (e) => {
@@ -141,7 +150,7 @@ function LocationForm() {
           <div className="mb-3">
             <label className="form-label">Location Content</label>
             <ReactQuill
-              value={formData.location_content}
+              value={formData.location_content.content_body}
               onChange={handleContentChange}
               theme="snow"
               className="form-control"
