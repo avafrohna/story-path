@@ -97,6 +97,7 @@ export async function updateProject(id, updates) {
  * @param {string} id - The project ID.
  * @returns {Promise<void>}
  */
+
 export async function deleteProject(id) {
   const response = await fetch(`${API_BASE_URL}/project?id=eq.${id}`, {
     method: 'DELETE',
@@ -111,7 +112,10 @@ export async function deleteProject(id) {
   }
 }
 
-// Fetch locations by project ID
+export async function createLocation(location) {
+  return apiRequest('/location', 'POST', location);
+}
+
 export async function getLocationsByProject(projectId) {
   try {
     const response = await apiRequest(`/location?project_id=eq.${projectId}`);
@@ -120,10 +124,6 @@ export async function getLocationsByProject(projectId) {
     console.error(`Error fetching locations for project ${projectId}:`, error);
     throw error;
   }
-}
-
-export async function createLocation(location) {
-  return apiRequest('/location', 'POST', location);
 }
 
 export async function updateLocation(locationId, updates) {

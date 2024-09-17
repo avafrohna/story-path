@@ -23,6 +23,7 @@ function ProjectListPage() {
   }, []);
 
   const handleDelete = async (id) => {
+    console.log(id);
     try {
       await deleteProject(id);
       setProjects(projects.filter((project) => project.id !== id));

@@ -16,23 +16,25 @@ function LocationForm() {
     location_position: '',
     score_points: 0,
     clue: '',
-    location_context: '',
+    location_content: '',
   });
 
   const [error, setError] = useState(null);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
+    const newValue = name === 'score_points' ? parseInt(value, 10) : value;
+
     setFormData({
       ...formData,
-      [name]: value,
+      [name]: newValue,
     });
   };
 
   const handleContentChange = (content) => {
     setFormData({
       ...formData,
-      location_context: content,
+      location_content: content,
     });
   };
 
@@ -41,14 +43,20 @@ function LocationForm() {
 
     const locationData = {
       ...formData,
-      project_id: projectId,
+      project_id: parseInt(projectId, 10), 
     };
 
+    console.log(projectId);
+
+    console.log("Submitting location data:", locationData); 
+
     try {
-      await createLocation(locationData);
-      navigate(`/list-locations`);
+      const response = await createLocation(locationData);
+      console.log("Create Location response:", response);
+      navigate(`/list-locations/${projectId}`);
     } 
     catch (err) {
+      console.error("Error creating location:", err.response || err); 
       setError(`Error creating location: ${err.message}`);
     }
   };
@@ -135,7 +143,7 @@ function LocationForm() {
           <div className="mb-3">
             <label className="form-label">Location Content</label>
             <ReactQuill
-              value={formData.location_context}
+              value={formData.location_content}
               onChange={handleContentChange}
               theme="snow"
               className="form-control"

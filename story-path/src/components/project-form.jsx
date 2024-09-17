@@ -6,18 +6,17 @@ import Header from './header';
 
 function ProjectForm() {
   const navigate = useNavigate();
-  const { id } = useParams();
-  const isEditMode = Boolean(id);
+  const { projectId } = useParams();
+  const isEditMode = Boolean(projectId);
 
   const [formData, setFormData] = useState({
-    //id: '',
     title: '',
     description: '',
     is_published: false,
     participant_scoring: 'Not Scored',
     instructions: '',
     initial_clue: '',
-    homescreen_display: '',
+    homescreen_display: 'Display initial clue',
   });
 
   const [error, setError] = useState(null);
@@ -26,7 +25,7 @@ function ProjectForm() {
     if (isEditMode) {
       const fetchProjectData = async () => {
         try {
-          const project = await getProject(id);
+          const project = await getProject(projectId);
           setFormData({
             title: project.title || '',
             description: project.description || '',
@@ -43,7 +42,7 @@ function ProjectForm() {
       };
       fetchProjectData();
     }
-  }, [id, isEditMode]);
+  }, [projectId, isEditMode]);
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
@@ -59,12 +58,13 @@ function ProjectForm() {
   
     try {
       if (isEditMode) {
-        const response = await updateProject(id, formData);
+        const response = await updateProject(projectId, formData);
         console.log("Update response:", response);
       } 
       else {
         const response = await createProject(formData);
         console.log("Create response:", response);
+        console.log("New Project ID:", response[0].id); 
       }
 
       navigate('/list-projects');

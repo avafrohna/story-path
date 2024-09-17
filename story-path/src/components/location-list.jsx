@@ -11,11 +11,14 @@ function LocationList() {
 
   useEffect(() => {
     const fetchLocations = async () => {
+      console.log(projectId);
       try {
+        console.log(projectId);
         const locationsData = await getLocationsByProject(projectId);
         setLocations(locationsData);
       } 
       catch (err) {
+        console.log(projectId);
         setError(`Error fetching locations: ${err.message}`);
       }
     };
@@ -46,7 +49,7 @@ function LocationList() {
         </h1>
 
         <div className="mt-4">
-          <Link to={`/add-location`}>
+          <Link to={`/add-location/${projectId}`}>
             <button className="btn btn-success">Add Location</button>
           </Link>
         </div>
