@@ -2,21 +2,24 @@ import { useParams, Link } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import Footer from './footer';
 import Header from './header';
-import { getLocationsByProject, deleteLocation } from '../api';
+import { getProject, getLocations, deleteLocation } from '../api';
 
 function LocationList() {
   const { projectId } = useParams();
   const [locations, setLocations] = useState([]);
   const [error, setError] = useState(null);
+  const [title, setTitle] = useState([]);
 
   useEffect(() => {
     const fetchLocations = async () => {
       console.log(projectId);
       try {
-        console.log(projectId);
-        const locationsData = await getLocationsByProject(projectId);
+        const projectData = await getProject(projectId);
+        setTitle(projectData[0].title);
+        const locationsData = await getLocations();
+        console.log(locationsData);
         setLocations(locationsData);
-      } 
+      }
       catch (err) {
         console.log(projectId);
         setError(`Error fetching locations: ${err.message}`);
@@ -41,7 +44,7 @@ function LocationList() {
 
       <div className="container-custom mt-3">
         <h1>
-          Locations
+          {title} - Locations
           <Link to={`/preview`}>
             <button className="btn btn-success ms-4">Preview</button>
           </Link>
@@ -49,7 +52,7 @@ function LocationList() {
         </h1>
 
         <div className="mt-4">
-          <Link to={`/add-location/${projectId}`}>
+          <Link to={`/add-location`}>
             <button className="btn btn-success">Add Location</button>
           </Link>
         </div>

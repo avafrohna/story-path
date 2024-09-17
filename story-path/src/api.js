@@ -25,10 +25,15 @@ async function apiRequest(endpoint, method = 'GET', body = null) {
   }
 
   if (body) {
-    options.body = JSON.stringify({ ...body, username: USERNAME });
+    const requestBody = { ...body, project_id: parseInt(body.project_id), username: USERNAME };
+    console.log('Request Body:', requestBody);
+    options.body = JSON.stringify(requestBody);
+    console.log('Request options:', options);
   }
 
   const response = await fetch(`${API_BASE_URL}${endpoint}`, options);
+  console.log(response);
+
   if (!response.ok) {
     throw new Error(`HTTP error! status: ${response.status}`);
   }
@@ -57,9 +62,7 @@ export async function getProjects() {
  * @returns {Promise<object>} - Returns a single project object.
  */
 export async function getProject(id) {
-  const response = await apiRequest(`/project?id=eq.${id}`);
-  console.log(response);
-  return response;
+  return await apiRequest(`/project?id=eq.${id}`);
 }
 
 /**
@@ -97,7 +100,6 @@ export async function updateProject(id, updates) {
  * @param {string} id - The project ID.
  * @returns {Promise<void>}
  */
-
 export async function deleteProject(id) {
   const response = await fetch(`${API_BASE_URL}/project?id=eq.${id}`, {
     method: 'DELETE',
@@ -112,9 +114,36 @@ export async function deleteProject(id) {
   }
 }
 
+
+//          LOCATION
+
+/**
+ * Fetch all location.
+ * @returns {Promise<Array>} - Returns an array of project objects.
+ */
+export async function getLocations() {
+  try {
+    const response = await apiRequest('/location');
+    return response;
+  } 
+  catch (error) {
+    console.error("Error in getLocations: ", error);
+    throw error;
+  }
+}
+
+/**
+ * Create a new location.
+ * @param {object} location - The location details.
+ * @returns {Promise<object>} - The created location object.
+ */
 export async function createLocation(location) {
   return apiRequest('/location', 'POST', location);
 }
+
+
+
+
 
 export async function getLocationsByProject(projectId) {
   try {

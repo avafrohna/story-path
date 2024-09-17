@@ -4,11 +4,17 @@ import { createProject, getProject, updateProject } from '../api';
 import Footer from './footer';
 import Header from './header';
 
+//TO DO:
+// - make certain things required and certain not
+
 function ProjectForm() {
   const navigate = useNavigate();
   const { projectId } = useParams();
+  console.log(projectId);
   const isEditMode = Boolean(projectId);
+  console.log(isEditMode);
 
+  //default form
   const [formData, setFormData] = useState({
     title: '',
     description: '',
@@ -19,21 +25,24 @@ function ProjectForm() {
     homescreen_display: 'Display initial clue',
   });
 
+  //quoi
   const [error, setError] = useState(null);
 
+  //quoi
   useEffect(() => {
+    //edit mode form
     if (isEditMode) {
       const fetchProjectData = async () => {
         try {
           const project = await getProject(projectId);
           setFormData({
-            title: project[0].title || '',
+            title: project[0].title,
             description: project[0].description || '',
-            is_published: project[0].is_published || false,
-            participant_scoring: project[0].participant_scoring || 'Not Scored',
+            is_published: project[0].is_published,
+            participant_scoring: project[0].participant_scoring,
             instructions: project[0].instructions || '',
             initial_clue: project[0].initial_clue || '',
-            homescreen_display: project[0].homescreen_display || 'Display initial clue',
+            homescreen_display: project[0].homescreen_display,
           });
         }
         catch (err) {
@@ -62,22 +71,24 @@ function ProjectForm() {
       else {
         await createProject(formData);
       }
-
       navigate('/list-projects');
     } 
     catch (err) {
       console.error('Error saving project:', err.message);
-      setError('Error saving project: ' + err.message);
     }
-  };  
+  };
 
   return (
     <div id="root">
       <Header />
 
-      <div className="container mt-4 ms-5">
-        <h1>{isEditMode ? 'Edit Project' : 'Add Project'}</h1>
-        <p>Fill in the form below to {isEditMode ? 'edit' : 'create'} a new project.</p>
+      <div className="container-custom mt-3">
+        <h1>
+          {isEditMode ? 'Edit Project' : 'Add Project'}
+        </h1>
+        <p>
+          Fill in the form below to {isEditMode ? 'edit this' : 'create a new'} project.
+        </p>
 
         {error && <p className="text-danger">{error}</p>}
 

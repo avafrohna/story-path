@@ -5,10 +5,10 @@ function Footer() {
         <p className="mb-0">&copy; 2024 Story Path. All Rights Reserved.</p>
         <ul className="list-inline">
           <li className="list-inline-item">
-            <a href="" className="text-muted">Privacy Policy</a>
+            <div className="text-muted">Privacy Policy</div>
           </li>
           <li className="list-inline-item">
-            <a href="" className="text-muted">Terms of Service</a>
+            <div className="text-muted">Terms of Service</div>
           </li>
         </ul>
       </div>

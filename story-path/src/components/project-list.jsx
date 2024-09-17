@@ -23,8 +23,8 @@ function ProjectListPage() {
   }, []);
 
   const handleDelete = async (id) => {
-    console.log(id);
     try {
+      console.log("Delete: ", id);
       await deleteProject(id);
       setProjects(projects.filter((project) => project.id !== id));
     } 
@@ -69,10 +69,7 @@ function ProjectListPage() {
                     </Link>
                     <button
                       className="btn btn-primary me-2"
-                      onClick={() => handleDelete(project.id)}
-                    >
-                      Delete
-                    </button>
+                      onClick={() => handleDelete(project.id)}>Delete</button>
                   </td>
                 </tr>
               ))}

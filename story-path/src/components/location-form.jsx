@@ -9,14 +9,18 @@ import Header from './header';
 function LocationForm() {
   const navigate = useNavigate();
   const { projectId } = useParams();
+  console.log(projectId);
 
   const [formData, setFormData] = useState({
     location_name: '',
     location_trigger: 'Location Entry',
-    location_position: '',
+    location_position: '(27.4975,153.013276)',
     score_points: 0,
     clue: '',
     location_content: '',
+    location_order: '',
+    extra: '',
+    project_id: '',
   });
 
   const [error, setError] = useState(null);
@@ -40,20 +44,14 @@ function LocationForm() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
-    const locationData = {
-      ...formData,
-      project_id: parseInt(projectId, 10), 
-    };
-
     console.log(projectId);
 
-    console.log("Submitting location data:", locationData); 
+    console.log("Submitting location data:", formData); 
 
     try {
-      const response = await createLocation(locationData);
-      console.log("Create Location response:", response);
-      navigate(`/list-locations/${projectId}`);
+      await createLocation(formData); //catches error here
+      console.log("here");
+      navigate(`/list-locations/${projectId}`); //potentially here
     } 
     catch (err) {
       console.error("Error creating location:", err.response || err); 
