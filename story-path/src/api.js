@@ -57,7 +57,9 @@ export async function getProjects() {
  * @returns {Promise<object>} - Returns a single project object.
  */
 export async function getProject(id) {
-  return apiRequest(`/project?id=eq.${id}`);
+  const response = await apiRequest(`/project?id=eq.${id}`);
+  console.log(response);
+  return response;
 }
 
 /**
@@ -88,8 +90,6 @@ export async function updateProject(id, updates) {
   if (!response.ok) {
     throw new Error(`Error updating project with ID ${id}`);
   }
-
-  return response.json();
 }
 
 /**

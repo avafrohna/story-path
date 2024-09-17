@@ -60,6 +60,7 @@ function ProjectListPage() {
                     <div>{project.description}</div>
                   </td>
                   <td className="text-end">
+                    <div>{project.id}</div>
                     <Link to={`/list-locations/${project.id}`}>
                       <button className="btn btn-primary me-2">View Locations</button>
                     </Link>

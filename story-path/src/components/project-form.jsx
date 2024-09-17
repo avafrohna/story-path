@@ -27,13 +27,13 @@ function ProjectForm() {
         try {
           const project = await getProject(projectId);
           setFormData({
-            title: project.title || '',
-            description: project.description || '',
-            is_published: project.is_published || false,
-            participant_scoring: project.participant_scoring || 'Not Scored',
-            instructions: project.instructions || '',
-            initial_clue: project.initial_clue || '',
-            homescreen_display: project.homescreen_display || 'Display initial clue',
+            title: project[0].title || '',
+            description: project[0].description || '',
+            is_published: project[0].is_published || false,
+            participant_scoring: project[0].participant_scoring || 'Not Scored',
+            instructions: project[0].instructions || '',
+            initial_clue: project[0].initial_clue || '',
+            homescreen_display: project[0].homescreen_display || 'Display initial clue',
           });
         }
         catch (err) {
@@ -54,17 +54,13 @@ function ProjectForm() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("Submitting form data:", formData);
   
     try {
       if (isEditMode) {
-        const response = await updateProject(projectId, formData);
-        console.log("Update response:", response);
+        await updateProject(projectId, formData);
       } 
       else {
-        const response = await createProject(formData);
-        console.log("Create response:", response);
-        console.log("New Project ID:", response[0].id); 
+        await createProject(formData);
       }
 
       navigate('/list-projects');
