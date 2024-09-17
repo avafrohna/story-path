@@ -130,7 +130,8 @@ export async function deleteProject(id) {
 //          LOCATION
 
 /**
- * Fetch all location.
+ * Fetch all locations.
+ * currently seems to work
  * @returns {Promise<Array>} - Returns an array of project objects.
  */
 export async function getLocations() {
@@ -152,6 +153,13 @@ export async function getLocations() {
 export async function createLocation(location) {
   return apiRequest('/location', 'POST', location);
 }
+
+
+
+
+
+
+
 
 
 

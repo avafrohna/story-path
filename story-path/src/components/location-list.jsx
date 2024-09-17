@@ -1,8 +1,8 @@
 import { useParams, Link } from 'react-router-dom';
 import { useEffect, useState } from 'react';
+import { getProject, getLocations, deleteLocation } from '../api';
 import Footer from './footer';
 import Header from './header';
-import { getProject, getLocations, deleteLocation } from '../api';
 import QRGenerator from './qr-generator';
 
 function LocationList() {
@@ -10,6 +10,7 @@ function LocationList() {
   const [locations, setLocations] = useState([]);
   const [error, setError] = useState(null);
   const [title, setTitle] = useState('');
+
   const [showModal, setShowModal] = useState(false);
   const [qrCodeUrl, setQRCodeUrl] = useState('');
   const [modalLocations, setModalLocations] = useState(null);
@@ -36,30 +37,31 @@ function LocationList() {
     };
 
     fetchLocations();
-  }, [projectId]);
+  }, []);
 
-  const handleDelete = async (locationId) => {
+  const deleteLocations = async (locationId) => {
     try {
       await deleteLocation(locationId);
       setLocations(locations.filter((location) => location.id !== locationId));
-    } catch (err) {
+    } 
+    catch (err) {
       setError(`Error deleting location: ${err.message}`);
     }
   };
 
-  const handleQRCode = (locationId) => {
+  const createQRcode = (locationId) => {
     const locationUrl = `${window.location.origin}/location/${locationId}`;
     setQRCodeUrl(locationUrl);
     setModalLocations(null);
     setShowModal(true);
   };
 
-  const handlePrintAllQRCode = () => {
+  const printAllQRcodes = () => {
     setModalLocations(locations);
     setShowModal(true);
   };
 
-  const handleCloseModal = () => {
+  const closeModal = () => {
     setShowModal(false);
   };
 
@@ -73,7 +75,7 @@ function LocationList() {
           <Link to={`/preview`}>
             <button className="btn btn-success ms-4">Preview</button>
           </Link>
-          <button className="btn btn-success ms-4" onClick={handlePrintAllQRCode}>
+          <button className="btn btn-success ms-4" onClick={printAllQRcodes}>
             Print All QR Codes
           </button>
         </h1>
@@ -98,7 +100,7 @@ function LocationList() {
                   <td className="text-end">
                     <button
                       className="btn btn-primary me-2"
-                      onClick={() => handleQRCode(location.id)}
+                      onClick={() => createQRcode(location.id)}
                     >
                       Print QR Code
                     </button>
@@ -107,7 +109,7 @@ function LocationList() {
                     </Link>
                     <button
                       className="btn btn-primary me-2"
-                      onClick={() => handleDelete(location.id)}
+                      onClick={() => deleteLocations(location.id)}
                     >
                       Delete
                     </button>
@@ -125,7 +127,7 @@ function LocationList() {
 
       <QRGenerator
         show={showModal}
-        onClose={handleCloseModal}
+        onClose={closeModal}
         locationUrl={qrCodeUrl}
         locations={modalLocations}
       />

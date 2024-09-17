@@ -1,14 +1,16 @@
 import { useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import ReactQuill from 'react-quill';
-import 'react-quill/dist/quill.snow.css';
 import { createLocation } from '../api'; 
 import Footer from './footer';
 import Header from './header';
+import ReactQuill from 'react-quill';
+import 'react-quill/dist/quill.snow.css';
 
 function LocationForm() {
-  const navigate = useNavigate();
   const { projectId } = useParams();
+  const [error, setError] = useState(null);
+  const navigate = useNavigate();
+  
   console.log(projectId);
 
   const [formData, setFormData] = useState({
@@ -28,39 +30,34 @@ function LocationForm() {
     project_id: projectId,
   });
 
-  const [error, setError] = useState(null);
-
-  const handleChange = (e) => {
+  const editForm = (e) => {
     const { name, value } = e.target;
-    const newValue = name === 'score_points' ? parseInt(value, 10) : value;
-
     setFormData({
       ...formData,
-      [name]: newValue,
+      [name]: name === 'score_points' ? parseInt(value, 10) : value,
     });
   };
 
-  const handleContentChange = (value) => {
-    // Update only the content_body field in location_content
+  const updateLocationContent = (value) => {
+    // updated the body of location_content
     setFormData((prevData) => ({
       ...prevData,
       location_content: {
         ...prevData.location_content,
-        content_body: value, // ReactQuill returns the HTML content here
+        content_body: value,
       },
     }));
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    console.log(projectId);
+  const submit = async (e) => {
+    e.preventDefault(); //prevent page reload
 
     console.log("Submitting location data:", formData); 
 
     try {
       await createLocation(formData); //catches error here
-      console.log("here");
-      navigate(`/list-locations/${projectId}`); //potentially here
+      console.log("i made it here");
+      navigate(`/list-locations/${projectId}`); //potentially problem here
     } 
     catch (err) {
       console.error("Error creating location:", err.response || err); 
@@ -78,14 +75,14 @@ function LocationForm() {
 
         {error && <p className="text-danger">{error}</p>}
 
-        <form onSubmit={handleSubmit}>
+        <form onSubmit={submit}>
           <div className="mb-3">
             <label className="form-label">Location Name</label>
             <input
               type="text"
               name="location_name"
               value={formData.location_name}
-              onChange={handleChange}
+              onChange={editForm}
               className="form-control"
               required
             />
@@ -97,7 +94,7 @@ function LocationForm() {
             <select
               name="location_trigger"
               value={formData.location_trigger}
-              onChange={handleChange}
+              onChange={editForm}
               className="form-select"
               required
             >
@@ -114,7 +111,7 @@ function LocationForm() {
               type="text"
               name="location_position"
               value={formData.location_position}
-              onChange={handleChange}
+              onChange={editForm}
               className="form-control"
               required
             />
@@ -127,7 +124,7 @@ function LocationForm() {
               type="number"
               name="score_points"
               value={formData.score_points}
-              onChange={handleChange}
+              onChange={editForm}
               className="form-control"
               required
             />
@@ -139,7 +136,7 @@ function LocationForm() {
             <textarea
               name="clue"
               value={formData.clue}
-              onChange={handleChange}
+              onChange={editForm}
               className="form-control"
               rows="2"
               required
@@ -151,7 +148,7 @@ function LocationForm() {
             <label className="form-label">Location Content</label>
             <ReactQuill
               value={formData.location_content.content_body}
-              onChange={handleContentChange}
+              onChange={updateLocationContent}
               theme="snow"
               className="form-control"
             />

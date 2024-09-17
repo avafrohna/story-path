@@ -8,11 +8,10 @@ import Header from './header';
 // - make certain things required and certain not
 
 function ProjectForm() {
-  const navigate = useNavigate();
   const { projectId } = useParams();
-  console.log(projectId);
-  const isEditMode = Boolean(projectId);
-  console.log(isEditMode);
+  const [error, setError] = useState(null);
+  const navigate = useNavigate();
+  const editMode = Boolean(projectId);
 
   //default form
   const [formData, setFormData] = useState({
@@ -25,13 +24,9 @@ function ProjectForm() {
     homescreen_display: 'Display initial clue',
   });
 
-  //quoi
-  const [error, setError] = useState(null);
-
-  //quoi
   useEffect(() => {
     //edit mode form
-    if (isEditMode) {
+    if (editMode) {
       const fetchProjectData = async () => {
         try {
           const project = await getProject(projectId);
@@ -46,14 +41,14 @@ function ProjectForm() {
           });
         }
         catch (err) {
-          setError('Error fetching project: ' + err.message);
+          setError(`Error fetching project: ${err.message}`);
         }
       };
       fetchProjectData();
     }
-  }, [projectId, isEditMode]);
+  }, []);
 
-  const handleChange = (e) => {
+  const editForm = (e) => {
     const { name, value, type, checked } = e.target;
     setFormData({
       ...formData,
@@ -61,11 +56,11 @@ function ProjectForm() {
     });
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+  const submit = async (e) => {
+    e.preventDefault(); //prevent from reloading page
   
     try {
-      if (isEditMode) {
+      if (editMode) {
         await updateProject(projectId, formData);
       } 
       else {
@@ -74,7 +69,7 @@ function ProjectForm() {
       navigate('/list-projects');
     } 
     catch (err) {
-      console.error('Error saving project:', err.message);
+      setError(`Error saving projects: ${err.message}`);
     }
   };
 
@@ -83,23 +78,19 @@ function ProjectForm() {
       <Header />
 
       <div className="container-custom mt-3">
-        <h1>
-          {isEditMode ? 'Edit Project' : 'Add Project'}
-        </h1>
-        <p>
-          Fill in the form below to {isEditMode ? 'edit this' : 'create a new'} project.
-        </p>
+        <h1> {editMode ? 'Edit Project' : 'Add Project'} </h1>
+        <p> Fill in the form below to {editMode ? 'edit this' : 'create a new'} project. </p>
 
         {error && <p className="text-danger">{error}</p>}
-
-        <form onSubmit={handleSubmit}>
+        
+        <form onSubmit={submit}>
           <div className="mb-3">
             <label className="form-label">Title</label>
             <input
               type="text"
               name="title"
               value={formData.title}
-              onChange={handleChange}
+              onChange={editForm}
               className="form-control"
               required
             />
@@ -111,7 +102,7 @@ function ProjectForm() {
             <textarea
               name="description"
               value={formData.description}
-              onChange={handleChange}
+              onChange={editForm}
               className="form-control"
               rows="2"
               required
@@ -124,7 +115,7 @@ function ProjectForm() {
             <textarea
               name="instructions"
               value={formData.instructions}
-              onChange={handleChange}
+              onChange={editForm}
               className="form-control"
               rows="2"
               required
@@ -137,7 +128,7 @@ function ProjectForm() {
             <textarea
               name="initial_clue"
               value={formData.initial_clue}
-              onChange={handleChange}
+              onChange={editForm}
               className="form-control"
               rows="2"
             />
@@ -149,7 +140,7 @@ function ProjectForm() {
             <select
               name="homescreen_display"
               value={formData.homescreen_display}
-              onChange={handleChange}
+              onChange={editForm}
               className="form-select"
             >
               <option value="Display initial clue">Display initial clue</option>
@@ -163,7 +154,7 @@ function ProjectForm() {
             <select
               name="participant_scoring"
               value={formData.participant_scoring}
-              onChange={handleChange}
+              onChange={editForm}
               className="form-select"
             >
               <option value="Not Scored">Not Scored</option>
@@ -178,7 +169,7 @@ function ProjectForm() {
               type="checkbox"
               name="is_published"
               checked={formData.is_published}
-              onChange={handleChange}
+              onChange={editForm}
               className="form-check-input"
             />
             <label className="form-label">Published</label>

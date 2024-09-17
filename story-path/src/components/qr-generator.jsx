@@ -45,10 +45,10 @@ function QRGenerator({ show, onClose, locationUrl, locations }) {
 }
 
 QRGenerator.propTypes = {
-    show: PropTypes.bool.isRequired, // Boolean to control modal visibility
-    onClose: PropTypes.func.isRequired, // Function to handle modal close
-    locationUrl: PropTypes.string, // String for the single QR code URL
-    locations: PropTypes.array, // Array of locations for multiple QR codes
+    show: PropTypes.bool.isRequired,
+    onClose: PropTypes.func.isRequired,
+    locationUrl: PropTypes.string,
+    locations: PropTypes.array,
 };
 
 export default QRGenerator;

@@ -15,16 +15,16 @@ function ProjectListPage() {
         setProjects(projectsData); 
       } 
       catch (err) {
-        setError(err.message);
+        setError(`Error fetching projects: ${err.message}`);
       }
     };
   
     fetchProjects();
   }, []);
 
-  const handleDelete = async (id) => {
+  const deleteProjects = async (id) => {
     try {
-      console.log("Delete: ", id);
+      console.log("Delete: ", id); //check if it printed correct item
       await deleteProject(id);
       setProjects(projects.filter((project) => project.id !== id));
     } 
@@ -47,9 +47,9 @@ function ProjectListPage() {
             <button className="btn btn-success">Add Project</button>
           </Link>
         </div>
+
+        {error && <p className="text-danger">{error}</p>}
       
-        {error && <p className="text-danger">Error fetching projects: {error}</p>}
-  
         {projects.length > 0 ? (
           <table className="table table-striped mt-4">
             <tbody>
@@ -69,7 +69,7 @@ function ProjectListPage() {
                     </Link>
                     <button
                       className="btn btn-primary me-2"
-                      onClick={() => handleDelete(project.id)}>Delete</button>
+                      onClick={() => deleteProjects(project.id)}>Delete</button>
                   </td>
                 </tr>
               ))}
