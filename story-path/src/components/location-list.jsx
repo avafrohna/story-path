@@ -3,12 +3,15 @@ import { useEffect, useState } from 'react';
 import Footer from './footer';
 import Header from './header';
 import { getProject, getLocations, deleteLocation } from '../api';
+import QRGenerator from './qr-generator';
 
 function LocationList() {
   const { projectId } = useParams();
   const [locations, setLocations] = useState([]);
   const [error, setError] = useState(null);
   const [title, setTitle] = useState([]);
+  const [showModal, setShowModal] = useState(false);
+  const [qrCodeUrl, setQRCodeUrl] = useState(''); 
 
   useEffect(() => {
     const fetchLocations = async () => {
@@ -19,6 +22,18 @@ function LocationList() {
         const locationsData = await getLocations();
         console.log(locationsData);
         setLocations(locationsData);
+
+        if (locationsData.length === 0) {
+          const sampleLocation = {
+            id: 'sample-id',
+            name: 'Sample Location',
+            info: 'This is a sample location for demonstration purposes.',
+          };
+          setLocations([sampleLocation]);
+        } 
+        else {
+          setLocations(locationsData);
+        }
       }
       catch (err) {
         console.log(projectId);
@@ -36,6 +51,16 @@ function LocationList() {
     } catch (err) {
       setError(`Error deleting location: ${err.message}`);
     }
+  };
+
+  const handleQRCode = (locationId) => {
+    const locationUrl = `${window.location.origin}/location/${locationId}`;
+    setQRCodeUrl(locationUrl);
+    setShowModal(true);
+  };
+
+  const handleCloseModal = () => {
+    setShowModal(false);
   };
 
   return (
@@ -69,7 +94,9 @@ function LocationList() {
                     <div>{location.info}</div>
                   </td>
                   <td className="text-end">
-                    <button className="btn btn-primary me-2">Print QR Code</button>
+                    <button
+                      className="btn btn-primary me-2"
+                      onClick={() => handleQRCode(location.id)}>Print QR Code</button>
                     <Link to={`/edit-location/${location.id}`}>
                       <button className="btn btn-primary me-2">Edit</button>
                     </Link>
@@ -90,6 +117,11 @@ function LocationList() {
       </div>
 
       <Footer />
+      <QRGenerator
+        show={showModal}
+        onClose={handleCloseModal}
+        locationUrl={qrCodeUrl}
+      />
     </div>
   );
 }

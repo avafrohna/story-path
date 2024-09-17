@@ -157,15 +157,7 @@ export async function createLocation(location) {
 
 
 
-export async function getLocationsByProject(projectId) {
-  try {
-    const response = await apiRequest(`/location?project_id=eq.${projectId}`);
-    return response;
-  } catch (error) {
-    console.error(`Error fetching locations for project ${projectId}:`, error);
-    throw error;
-  }
-}
+
 
 export async function updateLocation(locationId, updates) {
   try {
