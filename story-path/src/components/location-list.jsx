@@ -26,12 +26,15 @@ function LocationList() {
         if (locationsData.length === 0) {
           const sampleLocation = {
             id: 'sample-id',
-            name: 'Sample Location',
-            info: 'This is a sample location for demonstration purposes.',
+            location_name: 'Sample Location',
+            location_trigger: 'Location Entry',
+            location_position: '(27.4975,153.013276)',
+            score_points: 0,
           };
           setLocations([sampleLocation]);
         }
-      } catch (err) {
+      } 
+      catch (err) {
         setError(`Error fetching locations: ${err.message}`);
       }
     };
@@ -72,7 +75,7 @@ function LocationList() {
       <div className="container-custom mt-3">
         <h1>
           {title} - Locations
-          <Link to={`/preview`}>
+          <Link to={`/preview/${projectId}`}>
             <button className="btn btn-success ms-4">Preview</button>
           </Link>
           <button className="btn btn-success ms-4" onClick={printAllQRcodes}>
@@ -82,7 +85,7 @@ function LocationList() {
 
         <div className="mt-4">
           <Link to={`/add-location/${projectId}`}>
-            <button className="btn btn-success">Add Location</button>
+            <button className="btn btn-primary">Add Location</button>
           </Link>
         </div>
 
@@ -94,8 +97,10 @@ function LocationList() {
               {locations.map((location) => (
                 <tr key={location.id}>
                   <td>
-                    <div className="fw-bold fs-5">{location.name}</div>
-                    <div>{location.info}</div>
+                    <div className="fw-bold fs-5">{location.location_name}</div>
+                    <div>Trigger: {location.location_trigger}</div>
+                    <div>Position: {location.location_position}</div>
+                    <div>Score: {location.score_points}</div>
                   </td>
                   <td className="text-end">
                     <button
@@ -105,10 +110,10 @@ function LocationList() {
                       Print QR Code
                     </button>
                     <Link to={`/edit-location/${location.id}`}>
-                      <button className="btn btn-primary me-2">Edit</button>
+                      <button className="btn btn-secondary me-2">Edit</button>
                     </Link>
                     <button
-                      className="btn btn-primary me-2"
+                      className="btn btn-danger me-2"
                       onClick={() => deleteLocations(location.id)}
                     >
                       Delete

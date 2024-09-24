@@ -1,7 +1,13 @@
+// imports header and footer pages and components for linking pages together
 import { Link } from 'react-router-dom';
 import Footer from './footer';
 import Header from './header';
 
+/**
+ * This function is the first page that a user sees, essentially a home page
+ * 
+ * @returns 
+ */
 function LandingPage() {
   return (
     <div id="root">
@@ -13,7 +19,7 @@ function LandingPage() {
 
         <div className="d-grid gap-2 d-md-flex justify-content-md-center mt-4">
             <Link to="/list-projects">
-              <button className="btn btn-success">Get Started</button>
+              <button className="btn btn-primary fs-5">Get Started</button>
             </Link>
         </div>
       </div>

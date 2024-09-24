@@ -58,14 +58,14 @@ async function apiRequest(endpoint, method = 'GET', body = null) {
  * @returns {Promise<Array>} - Returns an array of project objects.
  */
 export async function getProjects() {
-    try {
-      const response = await apiRequest('/project');
-      return response;
-    } 
-    catch (error) {
-      console.error("Error in getProjects: ", error);
-      throw error;
-    }
+  try {
+    const response = await apiRequest('/project');
+    return response;
+  } 
+  catch (error) {
+    console.error("Error in getProjects: ", error);
+    throw error;
+  }
 }
 
 /**
@@ -138,11 +138,20 @@ export async function getLocations() {
   try {
     const response = await apiRequest('/location');
     return response;
-  } 
+  }
   catch (error) {
     console.error("Error in getLocations: ", error);
     throw error;
   }
+}
+
+/**
+ * Fetch a single location by ID.
+ * @param {string} id - The location ID.
+ * @returns {Promise<object>} - Returns a single location object.
+ */
+export async function getLocation(id) {
+  return await apiRequest(`/location?id=eq.${id}`);
 }
 
 /**

@@ -1,3 +1,10 @@
+/**
+ * This function is for the footer
+ * It is imported to every page so it is always visible
+ * The footer does not contain any page links, and just provides generic footer statements
+ * @returns 
+ */
+
 function Footer() {
   return (
     <footer className="bg-light text-center py-3">

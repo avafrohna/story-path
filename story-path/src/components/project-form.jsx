@@ -7,13 +7,20 @@ import Header from './header';
 //TO DO:
 // - make certain things required and certain not
 
+/**
+ * This function provides the form that allows users to add or edit projects
+ * 
+ * @returns 
+ */
 function ProjectForm() {
   const { projectId } = useParams();
+  const editMode = Boolean(projectId);
+  // if project ID is provided, the form is set to edit mode, otherwise it is just adding a new project
+  
   const [error, setError] = useState(null);
   const navigate = useNavigate();
-  const editMode = Boolean(projectId);
 
-  //default form
+  // default form, is empty expect for a couple values which are automatically set
   const [formData, setFormData] = useState({
     title: '',
     description: '',
@@ -25,11 +32,14 @@ function ProjectForm() {
   });
 
   useEffect(() => {
-    //edit mode form
+    // edit mode form, fetches data from form and fills it in for user
     if (editMode) {
       const fetchProjectData = async () => {
         try {
           const project = await getProject(projectId);
+          // project is an object which is a list of array's containing the form data
+          // since all the data is in the same array, the project will always only have 1 array
+          // therefore, project[0] will always return the project info
           setFormData({
             title: project[0].title,
             description: project[0].description || '',
@@ -46,7 +56,7 @@ function ProjectForm() {
       };
       fetchProjectData();
     }
-  }, []);
+  }, []); // only want to this to render once since when you are done it will take you back to project list page
 
   const editForm = (e) => {
     const { name, value, type, checked } = e.target;
