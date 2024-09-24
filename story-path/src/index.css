@@ -87,3 +87,23 @@ footer {
   padding-left: 60px;
   padding-right: 60px;
 }
+
+.mobile-preview-container {
+  width: 375px; /* Standard mobile screen width */
+  height: 500px; /* Standard mobile screen height */
+  margin: 0 auto; /* Center the container horizontally */
+  margin-top: 50px; /* Add some space from the top */
+  border: 1px solid #ccc; /* Optional border to resemble mobile device */
+  border-radius: 20px; /* Rounded corners like a mobile device */
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* Light shadow for mobile device effect */
+  overflow: hidden; /* Ensure content stays within the container */
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+}
+
+.mobile-content {
+  padding: 20px;
+  flex: 1; /* Ensure the content fills the container */
+  overflow-y: auto; /* Scrollable if content overflows */
+}
