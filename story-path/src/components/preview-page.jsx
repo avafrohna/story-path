@@ -1,11 +1,11 @@
-//import { useParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import { useEffect, useState } from 'react';
-//import { getProject, getLocations, getLocation } from '../api';
+import { getProject, getLocations } from '../api';
 import Footer from './footer';
 import Header from './header';
 
 function PreviewPage() {
-  //const { projectId } = useParams();
+  const { projectId } = useParams();
   const [error, setError] = useState(null);
   const [locations, setLocations] = useState([]);
   const [location, setLocation] = useState(null);
@@ -14,58 +14,39 @@ function PreviewPage() {
   const [totalScore, setTotalScore] = useState(0);
   let [currentScore, setCurrentScore] = useState(0);
   let [currentNumLocations, setCurrentNumLocations] = useState(0);
+  let scoreMode = true; 
 
   useEffect(() => {
     const fetchProjectData = async () => {
       try {
-        //const projectData = await getProject(projectId);
-        const sampleProject = {
-          title: 'Sample Project',
-          description: 'This is a sample project.',
-          is_published: false,
-          participant_scoring: 'Not Scored',
-          instructions: 'Use to test website',
-          initial_clue: 'This is a long clue. you will need many skills in order to find this location. it will not be easy. make sure you read everything.',
-          homescreen_display: 'Display initial clue',
-        };
-        setProject(sampleProject); 
+        const projectData = await getProject(projectId);
+        setProject(projectData[0]);
 
-        //const locationsData = await getLocations();
-        const sampleLocations = [
-          {
-            id: 'sample-id-1',
-            location_name: 'Sample Location 1',
-            location_trigger: 'Location Entry',
-            location_position: '(27.4975,153.013276)',
-            score_points: 5,
-          },
-          {
-            id: 'sample-id-2',
-            location_name: 'Sample Location 2',
-            location_trigger: 'Location Entry',
-            location_position: '(27.4975,153.013276)',
-            score_points: 10,
-          },
-        ];
-        setLocations(sampleLocations);
+        const locationsData = await getLocations();
+        setLocations(locationsData.filter((location) => String(location.project_id) === String(projectId)));
       }
       catch (err) {
         setError(`Error fetching project: ${err.message}`);
       }
     };
-
     fetchProjectData();
   }, []);
 
   useEffect(() => {
     if (locations.length > 0) {
       setNumLocations(locations.length);
-  
-      let score = 0;
-      for (let i = 0; i < locations.length; i++) {
-        score += locations[i].score_points;
+      
+      if (project.participant_scoring != 'Not Scored') {
+        let score = 0;
+        for (let i = 0; i < locations.length; i++) {
+          score += locations[i].score_points;
+        }
+        setTotalScore(score);
       }
-      setTotalScore(score);
+      else {
+        setTotalScore(0);
+        scoreMode = false;
+      }
     }
   }, [locations]); 
 
@@ -73,7 +54,12 @@ function PreviewPage() {
     const currentLocation = locations[event.target.value];
     setLocation(currentLocation);
 
-    calculateCurrentScore(currentLocation);
+    if (scoreMode == true) {
+      calculateCurrentScore(currentLocation);
+    }
+    else {
+      setCurrentScore(0);
+    }
     calculateLocationsVisited();
   };
 
@@ -102,23 +88,23 @@ function PreviewPage() {
 
         {error && <p className="text-danger">{error}</p>}
 
-        {locations.length > 0 ? (
+        {locations.length > 0 ? ( 
           <div className="mb-3">
-              <label className="form-label">Change Locations to Test Scoring:</label>
-              <select
-                name="display"
-                onChange={chooseLocation}
-                className="form-select"
-              >
-                {locations.map((location, index) => (
-                  <option key={index} value={index}>
-                    {location.location_name}
-                  </option>
-                ))}
-              </select>
+            <label className="form-label">Change Locations to Test Scoring:</label>
+            <select
+              name="display"
+              onChange={chooseLocation}
+              className="form-select"
+            >
+              {locations.map((location, index) => (
+                <option key={index} value={index}>
+                  {location.location_name}
+                </option>
+              ))}
+            </select>
           </div>
         ) : (
-          <p>No locations available for this project.</p>
+          <p>No locations have been added.</p>
         )}
 
         <div className="mobile-preview-container">

@@ -9,7 +9,7 @@ function LocationList() {
   const { projectId } = useParams();
   const [locations, setLocations] = useState([]);
   const [error, setError] = useState(null);
-  const [title, setTitle] = useState('');
+  const [project, setProject] = useState('');
 
   const [showModal, setShowModal] = useState(false);
   const [qrCodeUrl, setQRCodeUrl] = useState('');
@@ -19,21 +19,10 @@ function LocationList() {
     const fetchLocations = async () => {
       try {
         const projectData = await getProject(projectId);
-        setTitle(projectData[0].title);
+        setProject(projectData[0]);
         const locationsData = await getLocations();
         setLocations(locationsData);
-
-        if (locationsData.length === 0) {
-          const sampleLocation = {
-            id: 'sample-id',
-            location_name: 'Sample Location',
-            location_trigger: 'Location Entry',
-            location_position: '(27.4975,153.013276)',
-            score_points: 0,
-          };
-          setLocations([sampleLocation]);
-        }
-      } 
+      }
       catch (err) {
         setError(`Error fetching locations: ${err.message}`);
       }
@@ -74,7 +63,7 @@ function LocationList() {
 
       <div className="container-custom mt-3">
         <h1>
-          {title} - Locations
+          {project.title} - Locations
           <Link to={`/preview/${projectId}`}>
             <button className="btn btn-success ms-4">Preview</button>
           </Link>
@@ -91,40 +80,47 @@ function LocationList() {
 
         {error && <p className="text-danger">{error}</p>}
 
-        {locations.length > 0 ? (
-          <table className="table table-striped mt-4">
-            <tbody>
-              {locations.map((location) => (
-                <tr key={location.id}>
-                  <td>
-                    <div className="fw-bold fs-5">{location.location_name}</div>
-                    <div>Trigger: {location.location_trigger}</div>
-                    <div>Position: {location.location_position}</div>
-                    <div>Score: {location.score_points}</div>
-                  </td>
-                  <td className="text-end">
-                    <button
-                      className="btn btn-primary me-2"
-                      onClick={() => createQRcode(location.id)}
-                    >
-                      Print QR Code
-                    </button>
-                    <Link to={`/edit-location/${location.id}`}>
-                      <button className="btn btn-secondary me-2">Edit</button>
-                    </Link>
-                    <button
-                      className="btn btn-danger me-2"
-                      onClick={() => deleteLocations(location.id)}
-                    >
-                      Delete
-                    </button>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+        {locations.length === 0 ? ( 
+          <p>No locations have been added.</p>
         ) : (
-          <p>No locations available for this project.</p>
+          locations.filter((location) => String(location.project_id) === String(projectId)).length === 0 ? (
+            <p>No locations available for this project.</p>
+          ) : (
+            <table className="table table-striped mt-4">
+              <tbody>
+                {locations
+                  .filter((location) => String(location.project_id) === String(projectId))
+                  .map((location) => (
+                    <tr key={location.id}>
+                      <td>
+                        <div className="fw-bold fs-5">{location.location_name}</div>
+                        <div>Trigger: {location.location_trigger}</div>
+                        <div>Position: {location.location_position}</div>
+                        <div>Score: {location.score_points}</div>
+                        <div>Content: {location.location_content}</div>
+                      </td>
+                      <td className="text-end">
+                        <button
+                          className="btn btn-primary me-2"
+                          onClick={() => createQRcode(location.id)}
+                        >
+                          Print QR Code
+                        </button>
+                        <Link to={`/edit-location/${location.id}`}>
+                          <button className="btn btn-secondary me-2">Edit</button>
+                        </Link>
+                        <button
+                          className="btn btn-danger me-2"
+                          onClick={() => deleteLocations(location.id)}
+                        >
+                          Delete
+                        </button>
+                      </td>
+                    </tr>
+                ))}
+              </tbody>
+            </table>
+          )
         )}
       </div>
 

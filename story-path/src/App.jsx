@@ -22,7 +22,7 @@ function App() {
         <Route path="/list-locations/:projectId" element={<LocationList />} />
         <Route path="/add-location/:projectId" element={<LocationForm />} />
         <Route path="/edit-location/:id" element={<LocationForm />} />
-        <Route path="/preview/:id" element={<PreviewPage />} />
+        <Route path="/preview/:projectId" element={<PreviewPage />} />
       </Routes>
     </Router>
   );

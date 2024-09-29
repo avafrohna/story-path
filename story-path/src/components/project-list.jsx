@@ -18,19 +18,7 @@ function ProjectListPage() {
     const fetchProjects = async () => {
       try {
         const projectsData = await getProjects();
-        setProjects(projectsData); 
-
-        // sample to test project while not connected to internet
-        // const sampleProject = {
-        //   title: 'Sample Project',
-        //   description: 'This is a sample project.',
-        //   is_published: false,
-        //   participant_scoring: 'Not Scored',
-        //   instructions: 'Use to test website',
-        //   initial_clue: 'test',
-        //   homescreen_display: 'Display initial clue',
-        // };
-        // setProjects([sampleProject]);
+        setProjects(projectsData);
       } 
       catch (err) {
         setError(`Error fetching projects: ${err.message}`);
@@ -81,7 +69,6 @@ function ProjectListPage() {
                     <div>{project.description}</div>
                   </td>
                   <td className="text-end">
-                    <div>{project.id}</div>
                     <Link to={`/list-locations/${project.id}`}>
                       <button className="btn btn-primary me-2">View Locations</button>
                     </Link>

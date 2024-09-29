@@ -1,6 +1,6 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { createLocation } from '../api'; 
+import { createLocation, getLocation } from '../api'; 
 import Footer from './footer';
 import Header from './header';
 import ReactQuill from 'react-quill';
@@ -8,27 +8,46 @@ import 'react-quill/dist/quill.snow.css';
 
 function LocationForm() {
   const { projectId } = useParams();
+  const { id } = useParams();
+  const editMode = Boolean(id);
   const [error, setError] = useState(null);
   const navigate = useNavigate();
   
   console.log(projectId);
 
   const [formData, setFormData] = useState({
-    location_name: 'hello',
+    location_name: '',
     location_trigger: 'Location Entry',
-    location_position: '(27.4975,153.013276)',
+    location_position: '',
     score_points: 0,
-    clue: 'we',
-    location_content: {
-      location_id: 0,
-      content_order: 1,
-      content_type: 'type',
-      content_body: 'body',
-    },
-    location_order: 'you',
-    extra: 'yay',
+    clue: '',
+    location_content: '',
     project_id: projectId,
   });
+
+  useEffect(() => {
+    // edit mode form, fetches data from form and fills it in for user
+    if (editMode) {
+      const fetchLocationData = async () => {
+        try {
+          const location = await getLocation(id);
+          setFormData({
+            location_name: location[0].location_name,
+            location_trigger: location[0].location_trigger,
+            location_position: location[0].location_position,
+            score_points: location[0].score_points,
+            clue: location[0].clue,
+            location_content: location[0].location_content,
+            project_id: location[0].project_id,
+          });
+        }
+        catch (err) {
+          setError(`Error fetching project: ${err.message}`);
+        }
+      };
+      fetchLocationData();
+    }
+  }, []);
 
   const editForm = (e) => {
     const { name, value } = e.target;
@@ -58,7 +77,7 @@ function LocationForm() {
       await createLocation(formData); //catches error here
       console.log("i made it here");
       navigate(`/list-locations/${projectId}`); //potentially problem here
-    } 
+    }
     catch (err) {
       console.error("Error creating location:", err.response || err); 
       setError(`Error creating location: ${err.message}`);
