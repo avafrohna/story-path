@@ -1,6 +1,6 @@
 import { useParams } from 'react-router-dom';
 import { useEffect, useState } from 'react';
-import { getProject, getLocations } from '../api';
+import { getProject, getLocations, getLocation } from '../api';
 import Footer from './footer';
 import Header from './header';
 
@@ -8,13 +8,14 @@ function PreviewPage() {
   const { projectId } = useParams();
   const [error, setError] = useState(null);
   const [locations, setLocations] = useState([]);
-  const [location, setLocation] = useState(null);
+  const [location, setLocation] = useState([]);
   const [project, setProject] = useState([]);
   const [totalNumLocations, setNumLocations] = useState(0);
   const [totalScore, setTotalScore] = useState(0);
   let [currentScore, setCurrentScore] = useState(0);
   let [currentNumLocations, setCurrentNumLocations] = useState(0);
   let scoreMode = true; 
+  let hasClue = false; 
 
   useEffect(() => {
     const fetchProjectData = async () => {
@@ -53,6 +54,10 @@ function PreviewPage() {
   const chooseLocation = (event) => {
     const currentLocation = locations[event.target.value];
     setLocation(currentLocation);
+
+    if (currentLocation.clue != '') {
+      hasClue = true;
+    }
 
     if (scoreMode == true) {
       calculateCurrentScore(currentLocation);
@@ -130,6 +135,17 @@ function PreviewPage() {
               </>
             )}
 
+            {hasClue ? (
+              <div>
+                <br></br>
+              </div>
+            ) : (
+              <div>
+                <h3>Location Clue</h3>
+                <p>{location.clue}</p>
+              </div> 
+            )}
+
             <div className='d-flex'>
               <button className="btn btn-primary me-2 w-50">
                 Points 
@@ -142,6 +158,7 @@ function PreviewPage() {
                 {currentNumLocations}/{totalNumLocations}
               </button>
             </div>
+
           </div>
         </div>
       </div>
