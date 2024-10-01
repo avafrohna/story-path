@@ -12,10 +12,10 @@ function PreviewPage() {
   const [project, setProject] = useState([]);
   const [totalNumLocations, setNumLocations] = useState(0);
   const [totalScore, setTotalScore] = useState(0);
-  let [currentScore, setCurrentScore] = useState(0);
-  let [currentNumLocations, setCurrentNumLocations] = useState(0);
+  const [currentScore, setCurrentScore] = useState(0);
+  const [currentNumLocations, setCurrentNumLocations] = useState(0);
+  const [hasClue, setHasClue] = useState(false);
   let scoreMode = true; 
-  let hasClue = false; 
 
   useEffect(() => {
     const fetchProjectData = async () => {
@@ -52,11 +52,19 @@ function PreviewPage() {
   }, [locations]); 
 
   const chooseLocation = (event) => {
-    const currentLocation = locations[event.target.value];
+    const selectedIndex = event.target.value;
+
+    if (selectedIndex === '') {
+      setLocation(null);
+      setHasClue(false);
+      return;
+    }
+
+    const currentLocation = locations[selectedIndex];
     setLocation(currentLocation);
 
     if (currentLocation.clue != '') {
-      hasClue = true;
+      setHasClue(true);
     }
 
     if (scoreMode == true) {
@@ -70,15 +78,13 @@ function PreviewPage() {
 
   const calculateCurrentScore = (currentLocation) => {
     if (currentScore < totalScore) {
-      currentScore += currentLocation.score_points;
-      setCurrentScore(currentScore)
+      setCurrentScore((prevScore) => prevScore + currentLocation.score_points);
     }
   };
 
   const calculateLocationsVisited = () => {
     if (currentNumLocations < totalNumLocations) {
-      currentNumLocations += 1;
-      setCurrentNumLocations(currentNumLocations)
+      setCurrentNumLocations((prevCount) => prevCount + 1);
     }
   };
 
@@ -101,6 +107,7 @@ function PreviewPage() {
               onChange={chooseLocation}
               className="form-select"
             >
+              <option value="">Select a location</option>
               {locations.map((location, index) => (
                 <option key={index} value={index}>
                   {location.location_name}

@@ -2,6 +2,8 @@ This file will be used to monitor the progress of the project.
 Specifically regarding what needs to be fixed or what is not working as expected.
 
 Working
+- start location on preview to be blank
+- remove location clue title if not display location clue
 - text going too far, ensure everything stays within the screen
 - sometimes points box will generate random negative numbers while I am typing
 - not sure what the ordering of locations is based on, is this local or remote through API
