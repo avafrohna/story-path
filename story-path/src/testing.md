@@ -2,13 +2,14 @@ This file will be used to monitor the progress of the project.
 Specifically regarding what needs to be fixed or what is not working as expected.
 
 Working
-- start location on preview to be blank
-- remove location clue title if not display location clue
 - text going too far, ensure everything stays within the screen
 - sometimes points box will generate random negative numbers while I am typing
 - not sure what the ordering of locations is based on, is this local or remote through API
-- does preview count the first location or wait till user selects first location, which is what it is now, also location clue title is there, but doesn't display clue since location hasn't yet been assigned
-- currently preview doesn't account for the fact that you may select the same location twice, which should not effect scoring or locations visited
+- preview page, phone, hits footer, create gap
+- if participant_scoring = number of QR codes, what happens?
+- hero image?
+- add error messages, user friendly messages displayed, not console.log
+- add comments and doc strings
 
 Done
 - preview is not displaying project information
@@ -26,3 +27,8 @@ Done
     - location[0].location_content.content_body and location[0].location_content[0].content_body causes type error
 - react quill allows image uploading
 - Print all QR codes displays all QR codes, not just those in the project, should also have labels that match locations
+- does preview count the first location or wait till user selects first location, which is what it is now, also location clue title is there, but doesn't display clue since location hasn't yet been assigned
+- currently preview doesn't account for the fact that you may select the same location twice, which should not effect scoring or locations visited
+- start location on preview to be blank
+- remove location clue title if not display location clue
+- implement map

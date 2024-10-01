@@ -154,6 +154,7 @@ function ProjectForm() {
             >
               <option value="Display initial clue">Display initial clue</option>
               <option value="Display all locations">Display all locations</option>
+              <option value="Display map">Display map</option>
             </select>
             <p className="text-muted small">Choose what to display on the homescreen of the project.</p>
           </div>

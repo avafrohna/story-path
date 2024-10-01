@@ -3,19 +3,20 @@ import { useEffect, useState } from 'react';
 import { getProject, getLocations } from '../api';
 import Footer from './footer';
 import Header from './header';
+import MapView from './map';
 
 function PreviewPage() {
   const { projectId } = useParams();
   const [error, setError] = useState(null);
   const [locations, setLocations] = useState([]);
-  const [location, setLocation] = useState([]);
+  const [location, setLocation] = useState(null);
   const [project, setProject] = useState([]);
   const [totalNumLocations, setNumLocations] = useState(0);
   const [totalScore, setTotalScore] = useState(0);
   const [currentScore, setCurrentScore] = useState(0);
   const [currentNumLocations, setCurrentNumLocations] = useState(0);
   const [hasClue, setHasClue] = useState(false);
-  let scoreMode = true; 
+  const [visitedLocations, setVisitedLocations] = useState(new Set());  
 
   useEffect(() => {
     const fetchProjectData = async () => {
@@ -46,7 +47,6 @@ function PreviewPage() {
       }
       else {
         setTotalScore(0);
-        scoreMode = false;
       }
     }
   }, [locations]); 
@@ -57,22 +57,33 @@ function PreviewPage() {
     if (selectedIndex === '') {
       setLocation(null);
       setHasClue(false);
-      return;
+      return
     }
 
     const currentLocation = locations[selectedIndex];
+
+    if (visitedLocations.has(selectedIndex)) {
+      setLocation(currentLocation);
+      if (currentLocation.clue != '') {
+        setHasClue(true);
+      }
+      else{
+        setHasClue(false);
+      }
+      return;
+    }
+
+    setVisitedLocations((prevVisited) => new Set(prevVisited).add(selectedIndex));
     setLocation(currentLocation);
 
     if (currentLocation.clue != '') {
       setHasClue(true);
     }
+    else{
+      setHasClue(false);
+    }
 
-    if (scoreMode == true) {
-      calculateCurrentScore(currentLocation);
-    }
-    else {
-      setCurrentScore(0);
-    }
+    calculateCurrentScore(currentLocation);
     calculateLocationsVisited();
   };
 
@@ -126,45 +137,73 @@ function PreviewPage() {
             <h3 className='mt-3'>Instructions</h3>
             <p>{project.instructions}</p>
 
-            {project.homescreen_display === 'Display all locations' ? (
-              <>
-                <h3>Locations</h3>
-                <ul>
-                  {locations.map((location, index) => (
-                    <li key={index}>{location.location_name}</li>
-                  ))}
-                </ul>
-              </>
-            ) : (
-              <>
-                <h3>Initial Clue</h3>
-                <p>{project.initial_clue}</p>
-              </>
-            )}
-
-            {hasClue ? (
+            {project.homescreen_display != 'Display map' ? (
               <div>
-                <br></br>
+                {project.homescreen_display === 'Display all locations' ? (
+                  <>
+                    <h3>Locations</h3>
+                    <ul>
+                      {locations.map((location, index) => (
+                        <li key={index}>{location.location_name}</li>
+                      ))}
+                    </ul>
+                  </>
+                ) : (
+                  <>
+                    <h3>Initial Clue</h3>
+                    <p>{project.initial_clue}</p>
+                  </>
+                )}
+
+                <div>
+                  {location ? (
+                    hasClue ? (
+                      <div>
+                        <h3>Location Clue</h3>
+                        <p>{location.clue}</p>
+                      </div>
+                    ) : (
+                      <div>
+                        <br></br>
+                      </div>
+                    )
+                  ) : (
+                    <div>
+                      <br></br>
+                    </div>
+                  )}
+                </div>
               </div>
             ) : (
               <div>
-                <h3>Location Clue</h3>
-                <p>{location.clue}</p>
-              </div> 
+                <h3>Map</h3>
+                <MapView locations={locations} />
+                <br></br>
+              </div>
             )}
-
-            <div className='d-flex'>
-              <button className="btn btn-primary me-2 w-50">
-                Points 
-                <br></br>
-                {currentScore}/{totalScore}
-              </button>
-              <button className="btn btn-primary w-50">
-                Locations Visited
-                <br></br>
-                {currentNumLocations}/{totalNumLocations}
-              </button>
-            </div>
+            
+            {project.participant_scoring != 'Not Scored' ? (
+              <div className='d-flex'>
+                <button className="btn btn-primary me-2 w-50">
+                  Points 
+                  <br></br>
+                  {currentScore}/{totalScore}
+                </button>
+                <button className="btn btn-primary w-50">
+                  Locations Visited
+                  <br></br>
+                  {currentNumLocations}/{totalNumLocations}
+                </button>
+              </div>
+            ) : (
+              <div className='d-flex'>
+                <button className="btn btn-primary w-100">
+                  Locations Visited
+                  <br></br>
+                  {currentNumLocations}/{totalNumLocations}
+                </button>
+              </div>
+            )}
 
           </div>
         </div>
