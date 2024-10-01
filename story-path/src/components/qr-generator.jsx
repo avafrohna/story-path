@@ -1,7 +1,7 @@
 import QRCode from 'react-qr-code';
 import PropTypes from 'prop-types';
 
-function QRGenerator({ show, onClose, locationUrl, locations }) {
+function QRGenerator({ show, onClose, locationUrl, location, locations }) {
   if (!show) {
     return null;
   }
@@ -22,14 +22,14 @@ function QRGenerator({ show, onClose, locationUrl, locations }) {
                 {locations.map((location) => (
                   <div key={location.id} className="mb-4 text-center">
                     <QRCode value={`${window.location.origin}/location/${location.id}`} />
-                    <p className="mt-2">{location.name}</p>
+                    <p className="mt-2">Scan this QR code to view: <strong>{location.location_name}</strong></p>
                   </div>
                 ))}
               </div>
             ) : (
               <div className="text-center">
                 <QRCode value={locationUrl} />
-                <p className="mt-3">Scan this QR code to view the location.</p>
+                <p className="mt-3">Scan this QR code to view {location.location_name}.</p>
               </div>
             )}
           </div>
@@ -48,6 +48,7 @@ QRGenerator.propTypes = {
     show: PropTypes.bool.isRequired,
     onClose: PropTypes.func.isRequired,
     locationUrl: PropTypes.string,
+    location: PropTypes.array,
     locations: PropTypes.array,
 };
 

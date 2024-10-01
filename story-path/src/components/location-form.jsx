@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { createLocation, getLocation, updateLocation } from '../api'; 
 import Footer from './footer';
@@ -11,7 +11,8 @@ function LocationForm() {
   const editMode = Boolean(id);
   const [error, setError] = useState(null);
   const navigate = useNavigate();
-  
+  const quillRef = useRef(null);
+
   const [formData, setFormData] = useState({
     location_name: '',
     location_trigger: 'Location Entry',
@@ -44,7 +45,7 @@ function LocationForm() {
       };
       fetchLocationData();
     }
-  }, [editMode, id]);
+  }, []);
 
   const editForm = (e) => {
     const { name, value } = e.target;
@@ -57,14 +58,12 @@ function LocationForm() {
   const handleLocationContentChange = (value) => {
     setFormData((prevData) => ({
       ...prevData,
-      location_content: value, // Directly store the string value
+      location_content: value,
     }));
   };
 
   const submit = async (e) => {
     e.preventDefault(); //prevent page reload
-
-    console.log("Submitting location data:", formData); 
 
     try {
       if (editMode) {
@@ -77,7 +76,19 @@ function LocationForm() {
     }
     catch (err) {
       console.error("Error creating location:", err.response || err); 
-      setError(`Error creating location: ${err.message}`);
+    }
+  };
+
+  const modules = {
+    toolbar: {
+      container: [
+        [{'header': '1'}, {'header': '2'}, {'font': []}],
+        [{size: []}],
+        ['bold', 'italic', 'underline', 'strike', 'blockquote'],
+        [{ 'color': [] }, { 'background': [] }],
+        [{'list': 'ordered'}, {'list': 'bullet'}, {'indent': '-1'}, {'indent': '+1'}],
+        ['link', 'image']
+      ]
     }
   };
 
@@ -155,7 +166,6 @@ function LocationForm() {
               onChange={editForm}
               className="form-control"
               rows="2"
-              required
             />
             <p className="text-muted small">Enter the clue that leads to the next location.</p>
           </div>
@@ -163,8 +173,10 @@ function LocationForm() {
           <div className="mb-3">
             <label className="form-label">Location Content</label>
             <ReactQuill
+              ref={quillRef}
               value={formData.location_content}
               onChange={handleLocationContentChange}
+              modules={modules}
               theme="snow"
               className="form-control"
             />

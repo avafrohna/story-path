@@ -2,7 +2,7 @@ This file will be used to monitor the progress of the project.
 Specifically regarding what needs to be fixed or what is not working as expected.
 
 Working
-- Print all QR codes displays all QR codes, not just those in the project, should also have labels that match locations
+- text going too far, ensure everything stays within the screen
 - sometimes points box will generate random negative numbers while I am typing
 - not sure what the ordering of locations is based on, is this local or remote through API
 - does preview count the first location or wait till user selects first location, which is what it is now, also location clue title is there, but doesn't display clue since location hasn't yet been assigned
@@ -22,3 +22,5 @@ Done
 - content is being posted with username appended in apiRequest(), see if this is necessary
     - location_content is an object with content_body and username, edit mode does not correctly retrieve information
     - location[0].location_content.content_body and location[0].location_content[0].content_body causes type error
+- react quill allows image uploading
+- Print all QR codes displays all QR codes, not just those in the project, should also have labels that match locations

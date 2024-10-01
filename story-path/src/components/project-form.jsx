@@ -16,7 +16,6 @@ function ProjectForm() {
   const { projectId } = useParams();
   const editMode = Boolean(projectId);
   // if project ID is provided, the form is set to edit mode, otherwise it is just adding a new project
-  
   const [error, setError] = useState(null);
   const navigate = useNavigate();
 

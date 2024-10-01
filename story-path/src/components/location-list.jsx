@@ -14,6 +14,7 @@ function LocationList() {
   const [showModal, setShowModal] = useState(false);
   const [qrCodeUrl, setQRCodeUrl] = useState('');
   const [modalLocations, setModalLocations] = useState(null);
+  const [modalLocation, setModalLocation] = useState(null);
 
   useEffect(() => {
     const fetchLocations = async () => {
@@ -41,15 +42,17 @@ function LocationList() {
     }
   };
 
-  const createQRcode = (locationId) => {
-    const locationUrl = `${window.location.origin}/location/${locationId}`;
+  const createQRcode = (location) => {
+    const locationUrl = `${window.location.origin}/location/${location.id}`;
     setQRCodeUrl(locationUrl);
+    setModalLocation(location);
     setModalLocations(null);
     setShowModal(true);
   };
 
   const printAllQRcodes = () => {
-    setModalLocations(locations);
+    const projectLocations = locations.filter((location) => String(location.project_id) === String(projectId));
+    setModalLocations(projectLocations);
     setShowModal(true);
   };
 
@@ -97,12 +100,11 @@ function LocationList() {
                         <div>Trigger: {location.location_trigger}</div>
                         <div>Position: {location.location_position}</div>
                         <div>Score: {location.score_points}</div>
-                        <div>Content: {location.location_content}</div>
                       </td>
                       <td className="text-end">
                         <button
                           className="btn btn-primary me-2"
-                          onClick={() => createQRcode(location.id)}
+                          onClick={() => createQRcode(location)}
                         >
                           Print QR Code
                         </button>
@@ -130,6 +132,7 @@ function LocationList() {
         show={showModal}
         onClose={closeModal}
         locationUrl={qrCodeUrl}
+        location={modalLocation}
         locations={modalLocations}
       />
     </div>

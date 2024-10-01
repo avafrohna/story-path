@@ -29,7 +29,6 @@ async function apiRequest(endpoint, method = 'GET', body = null) {
       ...body, 
       username: USERNAME
     };
-
     options.body = JSON.stringify(requestBody);
   }
 
@@ -38,7 +37,6 @@ async function apiRequest(endpoint, method = 'GET', body = null) {
   if (!response.ok) {
     throw new Error(`HTTP error! status: ${response.status}`);
   }
-  
   if (response.status === 204) {
     return null;
   }
