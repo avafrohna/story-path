@@ -1,6 +1,6 @@
 import { useParams } from 'react-router-dom';
 import { useEffect, useState } from 'react';
-import { getProject, getLocations, getLocation } from '../api';
+import { getProject, getLocations } from '../api';
 import Footer from './footer';
 import Header from './header';
 

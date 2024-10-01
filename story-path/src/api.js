@@ -30,27 +30,20 @@ async function apiRequest(endpoint, method = 'GET', body = null) {
       username: USERNAME
     };
 
-    if (body.location_content) {
-      requestBody.project_id = parseInt(body.project_id, 10);
-      requestBody.location_content = {
-        ...body.location_content,
-        username: USERNAME,
-      };
-    }
-
-    console.log('Request Body:', requestBody);
     options.body = JSON.stringify(requestBody);
-    console.log('Request options:', options);
   }
 
   const response = await fetch(`${API_BASE_URL}${endpoint}`, options);
-  console.log(response);
 
   if (!response.ok) {
     throw new Error(`HTTP error! status: ${response.status}`);
   }
   
-  return response.json();
+  if (response.status === 204) {
+    return null;
+  }
+
+  return response.json(); 
 }
 
 /**
@@ -64,7 +57,6 @@ export async function getProjects() {
   } 
   catch (error) {
     console.error("Error in getProjects: ", error);
-    throw error;
   }
 }
 
@@ -93,17 +85,11 @@ export async function createProject(project) {
  * @returns {Promise<object>} - The updated project object.
  */
 export async function updateProject(id, updates) {
-  const response = await fetch(`${API_BASE_URL}/project?id=eq.${id}`, {
-    method: 'PATCH',
-    headers: {
-      'Content-Type': 'application/json',
-      'Authorization': `Bearer ${JWT_TOKEN}`,
-    },
-    body: JSON.stringify(updates),
-  });
-
-  if (!response.ok) {
-    throw new Error(`Error updating project with ID ${id}`);
+  try {
+    await apiRequest(`/project?id=eq.${id}`, 'PATCH', updates);
+  } 
+  catch (error) {
+    console.error(`Error updating project with ID ${id}: `, error);
   }
 }
 
@@ -113,25 +99,16 @@ export async function updateProject(id, updates) {
  * @returns {Promise<void>}
  */
 export async function deleteProject(id) {
-  const response = await fetch(`${API_BASE_URL}/project?id=eq.${id}`, {
-    method: 'DELETE',
-    headers: {
-      'Content-Type': 'application/json',
-      'Authorization': `Bearer ${JWT_TOKEN}`,
-    },
-  });
-
-  if (!response.ok) {
-    throw new Error(`Error deleting project with ID ${id}`);
+  try {
+    await apiRequest(`/project?id=eq.${id}`, 'DELETE');
+  } 
+  catch (error) {
+    console.error(`Error deleting project with ID ${id}: `, error);
   }
 }
 
-
-//          LOCATION
-
 /**
  * Fetch all locations.
- * currently seems to work
  * @returns {Promise<Array>} - Returns an array of project objects.
  */
 export async function getLocations() {
@@ -141,7 +118,6 @@ export async function getLocations() {
   }
   catch (error) {
     console.error("Error in getLocations: ", error);
-    throw error;
   }
 }
 
@@ -163,44 +139,32 @@ export async function createLocation(location) {
   return apiRequest('/location', 'POST', location);
 }
 
+/**
+ * Delete a location.
+ * @param {string} id - The project ID.
+ * @returns {Promise<void>}
+ */
+export async function deleteLocation(locationId) {
+  try {
+    await apiRequest(`/location?id=eq.${locationId}`, 'DELETE');
+  } 
+  catch (error) {
+    console.error(`Error deleting location with ID ${locationId}: `, error);
+  }
+}
 
-
-
-
-
-
-
-
-
-
-
-
-
+/**
+ * Update a location.
+ * @param {string} id - The location ID.
+ * @param {object} updates - The location fields to update.
+ * @returns {Promise<object>} - The updated location object.
+ */
 export async function updateLocation(locationId, updates) {
   try {
     const response = await apiRequest(`/location?id=eq.${locationId}`, 'PATCH', updates);
     return response;
-  } catch (error) {
+  } 
+  catch (error) {
     console.error(`Error updating location with ID ${locationId}:`, error);
-    throw error;
-  }
-}
-
-export async function deleteLocation(locationId) {
-  try {
-    const response = await fetch(`${API_BASE_URL}/location?id=eq.${locationId}`, {
-      method: 'DELETE',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${JWT_TOKEN}`,
-      },
-    });
-
-    if (!response.ok) {
-      throw new Error(`Error deleting location with ID ${locationId}`);
-    }
-  } catch (error) {
-    console.error(`Error deleting location with ID ${locationId}:`, error);
-    throw error;
   }
 }

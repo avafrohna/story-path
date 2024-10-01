@@ -1,20 +1,17 @@
 import { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { createLocation, getLocation } from '../api'; 
+import { createLocation, getLocation, updateLocation } from '../api'; 
 import Footer from './footer';
 import Header from './header';
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
 
 function LocationForm() {
-  const { projectId } = useParams();
-  const { id } = useParams();
+  const { projectId, id } = useParams();
   const editMode = Boolean(id);
   const [error, setError] = useState(null);
   const navigate = useNavigate();
   
-  console.log(projectId);
-
   const [formData, setFormData] = useState({
     location_name: '',
     location_trigger: 'Location Entry',
@@ -42,12 +39,12 @@ function LocationForm() {
           });
         }
         catch (err) {
-          setError(`Error fetching project: ${err.message}`);
+          setError(`Error fetching location: ${err.message}`);
         }
       };
       fetchLocationData();
     }
-  }, []);
+  }, [editMode, id]);
 
   const editForm = (e) => {
     const { name, value } = e.target;
@@ -57,14 +54,10 @@ function LocationForm() {
     });
   };
 
-  const updateLocationContent = (value) => {
-    // updated the body of location_content
+  const handleLocationContentChange = (value) => {
     setFormData((prevData) => ({
       ...prevData,
-      location_content: {
-        ...prevData.location_content,
-        content_body: value,
-      },
+      location_content: value, // Directly store the string value
     }));
   };
 
@@ -74,9 +67,13 @@ function LocationForm() {
     console.log("Submitting location data:", formData); 
 
     try {
-      await createLocation(formData); //catches error here
-      console.log("i made it here");
-      navigate(`/list-locations/${projectId}`); //potentially problem here
+      if (editMode) {
+        await updateLocation(id, formData);
+      } 
+      else {
+        await createLocation(formData); 
+      }
+      navigate(`/list-locations/${projectId}`);
     }
     catch (err) {
       console.error("Error creating location:", err.response || err); 
@@ -166,8 +163,8 @@ function LocationForm() {
           <div className="mb-3">
             <label className="form-label">Location Content</label>
             <ReactQuill
-              value={formData.location_content.content_body}
-              onChange={updateLocationContent}
+              value={formData.location_content}
+              onChange={handleLocationContentChange}
               theme="snow"
               className="form-control"
             />

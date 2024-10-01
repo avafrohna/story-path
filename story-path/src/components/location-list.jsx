@@ -106,7 +106,7 @@ function LocationList() {
                         >
                           Print QR Code
                         </button>
-                        <Link to={`/edit-location/${location.id}`}>
+                        <Link to={`/edit-location/${location.project_id}/${location.id}`}>
                           <button className="btn btn-secondary me-2">Edit</button>
                         </Link>
                         <button
