@@ -8,9 +8,10 @@ import LocationForm from './components/location-form';
 import PreviewPage from './components/preview-page';
 
 /**
- * Main function that defines all the routes needed for story path
- * @returns 
- */
+* Main function that defines all the routes needed for Story Path
+* Uses React Router to navigate between pages in the application
+* @returns {JSX.Element}
+*/
 function App() {
   return (
     <Router>
@@ -18,10 +19,15 @@ function App() {
         <Route path="/" element={<LandingPage />} />
         <Route path="/list-projects" element={<ProjectListPage />} />
         <Route path="/add-project" element={<ProjectForm />} />
-        <Route path="/edit-project/:projectId" element={<ProjectForm />} />
-        <Route path="/list-locations/:projectId" element={<LocationList />} />
-        <Route path="/add-location/:projectId" element={<LocationForm />} />
-        <Route path="/edit-location/:projectId/:id" element={<LocationForm />} />
+        {/* appends project ID becuase this page is specific to a project */}
+        <Route path="/edit-project/:projectId" element={<ProjectForm />} /> 
+        {/* appends project ID becuase this page is specific to a project */}
+        <Route path="/list-locations/:projectId" element={<LocationList />} /> 
+        {/* appends project ID becuase this page is specific to a project */}
+        <Route path="/add-location/:projectId" element={<LocationForm />} /> 
+        {/* appends project ID becuase this page is specific to a project, id is the location ID which is necessary for editing a specific location */}
+        <Route path="/edit-location/:projectId/:id" element={<LocationForm />} /> 
+        {/* appends project ID becuase this page is specific to a project */}
         <Route path="/preview/:projectId" element={<PreviewPage />} />
       </Routes>
     </Router>

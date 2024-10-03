@@ -1,3 +1,4 @@
+// imports components and resources such as header, footer
 import { useParams, Link } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import { getProject, getLocations, deleteLocation } from '../api';
@@ -5,8 +6,19 @@ import Footer from './footer';
 import Header from './header';
 import QRGenerator from './qr-generator';
 
+/**
+ * This component is the list of locations
+ * This component displays a list of locations associated with a specific project.
+ * Features:
+ * - Display a list of locations belonging to a project.
+ * - Add a new location.
+ * - Delete a location.
+ * - Edit a location.
+ * - Generate a QR code for a location or print all QR codes for the project.
+ * @returns {JSX.Element}
+ */
 function LocationList() {
-  const { projectId } = useParams();
+  const { projectId } = useParams(); // gets projectId from URL parameters
   const [locations, setLocations] = useState([]);
   const [error, setError] = useState(null);
   const [project, setProject] = useState('');
@@ -16,11 +28,14 @@ function LocationList() {
   const [modalLocations, setModalLocations] = useState(null);
   const [modalLocation, setModalLocation] = useState(null);
 
+  // fetches project and location data when rendered
   useEffect(() => {
     const fetchLocations = async () => {
       try {
+        // fetch project data using project ID
         const projectData = await getProject(projectId);
         setProject(projectData[0]);
+        // fetches all locations
         const locationsData = await getLocations();
         setLocations(locationsData);
       }
@@ -30,8 +45,12 @@ function LocationList() {
     };
 
     fetchLocations();
-  }, []);
+  }, []); //only needs to be rendered once, when the page initially loads
 
+  /**
+   * deletes a location and updates the list of locations after deletion
+   * @param {number} locationId - ID of location wanted to delete
+   */
   const deleteLocations = async (locationId) => {
     try {
       await deleteLocation(locationId);
@@ -42,6 +61,10 @@ function LocationList() {
     }
   };
 
+  /**
+   * generates a QR code for a specific location and opens the modal
+   * @param {object} location - the location for which to generate the QR code.
+   */
   const createQRcode = (location) => {
     const locationUrl = `${window.location.origin}/location/${location.id}`;
     setQRCodeUrl(locationUrl);
@@ -50,14 +73,33 @@ function LocationList() {
     setShowModal(true);
   };
 
+  /**
+   * QR code generation for all locations and opens the modal
+   */
   const printAllQRcodes = () => {
     const projectLocations = locations.filter((location) => String(location.project_id) === String(projectId));
     setModalLocations(projectLocations);
     setShowModal(true);
   };
 
+  /**
+   * closes the QR code modal.
+   */
   const closeModal = () => {
     setShowModal(false);
+  };
+
+  /**
+   * trims long text to a maximum length and adds ellipsis if needed
+   * @param {string} text - the text to be trimmed
+   * @param {number} maxLength - the maximum length of the text
+   * @returns {string} - trimmed text with ellipsis if needed
+   */
+  const cutOffText = (text, maxLength) => {
+    if (text.length > maxLength) {
+      return text.substring(0, maxLength) + '...';
+    }
+    return text;
   };
 
   return (
@@ -75,14 +117,17 @@ function LocationList() {
           </button>
         </h1>
 
+        {/* add new location button */}
         <div className="mt-4">
           <Link to={`/add-location/${projectId}`}>
             <button className="btn btn-primary">Add Location</button>
           </Link>
         </div>
 
+        {/* display error messages */}
         {error && <p className="text-danger">{error}</p>}
 
+        {/* rendering based on the number of locations */}
         {locations.length === 0 ? ( 
           <p>No locations have been added.</p>
         ) : (
@@ -96,25 +141,22 @@ function LocationList() {
                   .map((location) => (
                     <tr key={location.id}>
                       <td>
-                        <div className="fw-bold fs-5">{location.location_name}</div>
+                        <div className="fw-bold fs-5">{cutOffText(location.location_name, 30)}</div>
                         <div>Trigger: {location.location_trigger}</div>
                         <div>Position: {location.location_position}</div>
                         <div>Score: {location.score_points}</div>
                       </td>
                       <td className="text-end">
-                        <button
-                          className="btn btn-primary me-2"
-                          onClick={() => createQRcode(location)}
-                        >
+                        {/* generate QR code for the location */}
+                        <button className="btn btn-primary me-2" onClick={() => createQRcode(location)}>
                           Print QR Code
                         </button>
+                        {/* edit location */}
                         <Link to={`/edit-location/${location.project_id}/${location.id}`}>
                           <button className="btn btn-secondary me-2">Edit</button>
                         </Link>
-                        <button
-                          className="btn btn-danger me-2"
-                          onClick={() => deleteLocations(location.id)}
-                        >
+                        {/* delete location */}
+                        <button className="btn btn-danger me-2" onClick={() => deleteLocations(location.id)}>
                           Delete
                         </button>
                       </td>
@@ -128,6 +170,7 @@ function LocationList() {
 
       <Footer />
 
+      {/* modal for displaying QR codes */}
       <QRGenerator
         show={showModal}
         onClose={closeModal}

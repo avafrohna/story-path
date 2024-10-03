@@ -1,20 +1,18 @@
+// imports components and resources such as header, footer
 import { useNavigate, useParams } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import { createProject, getProject, updateProject } from '../api'; 
 import Footer from './footer';
 import Header from './header';
 
-//TO DO:
-// - make certain things required and certain not
-
 /**
- * This function provides the form that allows users to add or edit projects
- * 
- * @returns 
+ * This component is the form for adding and editing projects
+ * It handles form data and submission, with appropriate fields
+ * @returns {JSX.Element}
  */
 function ProjectForm() {
-  const { projectId } = useParams();
-  const editMode = Boolean(projectId);
+  const { projectId } = useParams(); // gets projectId from URL parameters
+  const editMode = Boolean(projectId); 
   // if project ID is provided, the form is set to edit mode, otherwise it is just adding a new project
   const [error, setError] = useState(null);
   const navigate = useNavigate();
@@ -57,6 +55,7 @@ function ProjectForm() {
     }
   }, []); // only want to this to render once since when you are done it will take you back to project list page
 
+  // function to handle form changes and update state
   const editForm = (e) => {
     const { name, value, type, checked } = e.target;
     setFormData({
@@ -65,15 +64,16 @@ function ProjectForm() {
     });
   };
 
+  // function to handle form submission
   const submit = async (e) => {
     e.preventDefault(); //prevent from reloading page
   
     try {
       if (editMode) {
-        await updateProject(projectId, formData);
+        await updateProject(projectId, formData); // update function if in edit mode
       } 
       else {
-        await createProject(formData);
+        await createProject(formData); // create function if in edit mode
       }
       navigate('/list-projects');
     } 
@@ -90,9 +90,12 @@ function ProjectForm() {
         <h1> {editMode ? 'Edit Project' : 'Add Project'} </h1>
         <p> Fill in the form below to {editMode ? 'edit this' : 'create a new'} project. </p>
 
+        {/* display error messages */}
         {error && <p className="text-danger">{error}</p>}
         
+        {/* form for project input */}
         <form onSubmit={submit}>
+          {/* location title */}
           <div className="mb-3">
             <label className="form-label">Title</label>
             <input
@@ -106,6 +109,7 @@ function ProjectForm() {
             <p className="text-muted small">The name of your project.</p>
           </div>
 
+          {/* project description */}
           <div className="mb-3">
             <label className="form-label">Description</label>
             <textarea
@@ -119,6 +123,7 @@ function ProjectForm() {
             <p className="text-muted small">Provide a brief description of your project. This is not displayed to participants.</p>
           </div>
 
+          {/* project instructions */}
           <div className="mb-3">
             <label className="form-label">Instructions</label>
             <textarea
@@ -132,6 +137,7 @@ function ProjectForm() {
             <p className="text-muted small">Instructions for participants, explaining how to engage with the project.</p>
           </div>
 
+          {/* project initial clue */}
           <div className="mb-3">
             <label className="form-label">Initial Clue</label>
             <textarea
@@ -144,6 +150,7 @@ function ProjectForm() {
             <p className="text-muted small">The first clue to start the project. This is optional.</p>
           </div>
 
+          {/* project homescreen display */}
           <div className="mb-3">
             <label className="form-label">Homescreen Display</label>
             <select
@@ -159,6 +166,7 @@ function ProjectForm() {
             <p className="text-muted small">Choose what to display on the homescreen of the project.</p>
           </div>
 
+          {/* project scoring */}
           <div className="mb-3">
             <label className="form-label">Participant Scoring</label>
             <select
@@ -174,6 +182,7 @@ function ProjectForm() {
             <p className="text-muted small">Select how participants will be scored in this project.</p>
           </div>
 
+          {/* project published */}
           <div className="mb-3">
             <input
               type="checkbox"

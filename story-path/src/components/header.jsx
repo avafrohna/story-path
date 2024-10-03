@@ -1,13 +1,13 @@
 import { Link } from 'react-router-dom';
 
 /**
- * This function is for the header of the web page
+ * This component is used to render the header of the web page
  * It is imported to every page so it is always visible
- * Link to story path allows users to be taken back to the landing page at any time
- * Link to projects allows users to be taken back to the project list page at any time
- * @returns 
+ * The header includes: 
+ *  - Link to story path allows users to be taken back to the landing page at any time
+ *  - Link to projects allows users to be taken back to the project list page at any time
+ * @returns {JSX.Element}
  */
-
 function Header() {
   return (
     <header className="navbar navbar-expand-lg navbar-light bg-light py-3">

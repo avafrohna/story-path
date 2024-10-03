@@ -1,10 +1,9 @@
 /**
- * This function is for the footer
+ * This component is used to render the footer of the web page
  * It is imported to every page so it is always visible
- * The footer does not contain any page links, and just provides generic footer statements
- * @returns 
+ * The footer does not provide any navigation but displays important information.
+ * @returns {JSX.Element}
  */
-
 function Footer() {
   return (
     <footer className="bg-light text-center py-3">

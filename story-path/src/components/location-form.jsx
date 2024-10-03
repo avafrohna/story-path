@@ -1,3 +1,4 @@
+// imports components and resources such as header, footer, and react
 import { useState, useEffect, useRef } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { createLocation, getLocation, updateLocation } from '../api'; 
@@ -6,13 +7,24 @@ import Header from './header';
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
 
+/**
+ * This component is the form for locations
+ * Renders a form witj both "create" and "edit" modes based on the presence of an ID parameter
+ * Features:
+ * - Form fields for location name, trigger, position, points, clue, and rich-text content.
+ * - Allows users to input content using a text editor (ReactQuill) for "Location Content"
+ * - Submits the form data to create or update a location.
+ * @returns {JSX.Element}
+ */
 function LocationForm() {
   const { projectId, id } = useParams();
+  // determines if the form is in "edit" mode based on the presence of an ID
   const editMode = Boolean(id);
   const [error, setError] = useState(null);
   const navigate = useNavigate();
   const quillRef = useRef(null);
 
+  // initial, default form data for a new location
   const [formData, setFormData] = useState({
     location_name: '',
     location_trigger: 'Location Entry',
@@ -23,8 +35,8 @@ function LocationForm() {
     project_id: projectId,
   });
 
+  // fetches the location data in edit mode and populates the form fields
   useEffect(() => {
-    // edit mode form, fetches data from form and fills it in for user
     if (editMode) {
       const fetchLocationData = async () => {
         try {
@@ -47,6 +59,7 @@ function LocationForm() {
     }
   }, []);
 
+  // handles changes to form fields and updates formData state
   const editForm = (e) => {
     const { name, value } = e.target;
     setFormData({
@@ -55,6 +68,7 @@ function LocationForm() {
     });
   };
 
+  // handles changes to the ReactQuill editor
   const handleLocationContentChange = (value) => {
     setFormData((prevData) => ({
       ...prevData,
@@ -62,14 +76,15 @@ function LocationForm() {
     }));
   };
 
+  // handles form submission for both create and edit modes
   const submit = async (e) => {
-    e.preventDefault(); //prevent page reload
+    e.preventDefault(); // prevent page reload
 
     try {
-      if (editMode) {
+      if (editMode) { // update location in edit mode
         await updateLocation(id, formData);
       } 
-      else {
+      else { // create a new location in create mode
         await createLocation(formData); 
       }
       navigate(`/list-locations/${projectId}`);
@@ -79,6 +94,7 @@ function LocationForm() {
     }
   };
 
+  // configuration for ReactQuill toolbar options
   const modules = {
     toolbar: {
       container: [
@@ -100,9 +116,12 @@ function LocationForm() {
         <h1>Add Location</h1>
         <p>Fill in the form below to add a new location.</p>
 
+        {/* display error messages */}
         {error && <p className="text-danger">{error}</p>}
 
+        {/* form for location input */}
         <form onSubmit={submit}>
+          {/* location name */}
           <div className="mb-3">
             <label className="form-label">Location Name</label>
             <input
@@ -116,6 +135,7 @@ function LocationForm() {
             <p className="text-muted small">The name of this location.</p>
           </div>
 
+          {/* location trigger */}
           <div className="mb-3">
             <label className="form-label">Location Trigger</label>
             <select
@@ -132,6 +152,7 @@ function LocationForm() {
             <p className="text-muted small">Select how this location will be triggered (by location, QR code, or both).</p>
           </div>
 
+          {/* location position */}
           <div className="mb-3">
             <label className="form-label">Location Position (lat, long)</label>
             <input
@@ -145,6 +166,7 @@ function LocationForm() {
             <p className="text-muted small">Enter the latitude and longitude for this location.</p>
           </div>
 
+          {/* points for reaching a location */}
           <div className="mb-3">
             <label className="form-label">Points for Reaching Location</label>
             <input
@@ -158,6 +180,7 @@ function LocationForm() {
             <p className="text-muted small">Specify the number of points participants earn by reaching this location.</p>
           </div>
 
+          {/* location clue */}
           <div className="mb-3">
             <label className="form-label">Clue</label>
             <textarea
@@ -170,6 +193,7 @@ function LocationForm() {
             <p className="text-muted small">Enter the clue that leads to the next location.</p>
           </div>
 
+          {/* location content with ReactQuill */}
           <div className="mb-3">
             <label className="form-label">Location Content</label>
             <ReactQuill
@@ -183,6 +207,7 @@ function LocationForm() {
             <p className="text-muted small">Provide additional content that will be displayed when participants reach this location.</p>
           </div>
 
+          {/* submit button */}
           <button type="submit" className="btn btn-success mb-4">Save Location</button>
         </form>
       </div>

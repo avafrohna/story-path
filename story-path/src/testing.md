@@ -2,14 +2,6 @@ This file will be used to monitor the progress of the project.
 Specifically regarding what needs to be fixed or what is not working as expected.
 
 Working
-- text going too far, ensure everything stays within the screen
-- sometimes points box will generate random negative numbers while I am typing
-- not sure what the ordering of locations is based on, is this local or remote through API
-- preview page, phone, hits footer, create gap
-- if participant_scoring = number of QR codes, what happens?
-- hero image?
-- add error messages, user friendly messages displayed, not console.log
-- add comments and doc strings
 
 Done
 - preview is not displaying project information
@@ -32,3 +24,11 @@ Done
 - start location on preview to be blank
 - remove location clue title if not display location clue
 - implement map
+- preview page, phone, hits footer, create gap
+- text going too far, ensure everything stays within the screen
+- if participant_scoring = number of QR codes, what happens?
+- hero image?
+- sometimes points box will generate random negative numbers while I am typing
+- add error messages, user friendly messages displayed, not console.log
+- add comments and doc strings
+- make sure lat, long is always correct format, doesn't allow me to submit but error message should appear, and in edit mode, should say that input is not valid.
